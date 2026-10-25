@@ -52,6 +52,7 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [TIMING.md](TIMING.md) | Ones, twos and threes per action and layer, applied in the edit |
 | [QA.md](QA.md) | Continuity checker, frameqa, blind critics, the gate rules, delivery rules |
 | [BAKEOFF.md](BAKEOFF.md) | Run your own fair bake-off: principles, moments, critic prompt, log templates |
+| [PERSONAL-USE.md](PERSONAL-USE.md) | Private, non-commercial route: animate from **any** reference image (permissive hosted plus open-weight models), voices without cloning real people |
 
 ## The tools
 
