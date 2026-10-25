@@ -1,0 +1,7 @@
+{
+ "m3": {
+  "c1": {"winner": "B", "scores": {"A": 5, "B": 7, "C": 4.5}, "fails": {"C": "arm swells and lets go of the prop at 4.7 s"}},
+  "c2": {"winner": "B", "scores": {"A": 6, "B": 7, "C": 4}},
+  "c3": {"winner": "A", "scores": {"A": 7.5, "B": 7, "C": 5}}
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "fps": 24,
+ "default": "twos",
+ "pick": "sharpest",
+ "segments": [
+  {"shot": "S1", "start": 0.0,  "end": 3.8,  "rate": "twos",   "camera": "compensate", "why": "dialogue acting; slow push-in baked into the AI clip"},
+  {"shot": "S1", "start": 1.0,  "end": 1.25, "rate": "ones",   "why": "sidekick bounce: contact + rebound"},
+  {"shot": "S2", "start": 3.8,  "end": 6.2,  "rate": "twos",   "why": "reaction close-up"},
+  {"shot": "S2", "start": 4.6,  "end": 4.9,  "rate": "ones",   "why": "head snap / double take"},
+  {"shot": "S2", "start": 5.4,  "end": 6.2,  "rate": "fours",  "why": "pose hold on the grin"},
+  {"shot": "S3", "start": 6.2,  "end": 9.0,  "rate": "threes", "why": "background crowd only, locked camera"},
+  {"shot": "S4", "start": 9.0,  "end": 12.0, "rate": "ones",   "camera": "ones", "why": "code camera move on a still plate"}
+ ]
+}

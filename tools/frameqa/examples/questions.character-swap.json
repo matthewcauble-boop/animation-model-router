@@ -1,0 +1,7 @@
+[
+  {"id": "person_left", "severity": "P0", "lo": 0.5, "hi": 0.85, "text": "Is any part of a real human person still visible where the cartoon character should be (a real face, real hands, real skin at the edge of the character)?"},
+  {"id": "halo", "severity": "P1", "lo": 0.5, "hi": 0.85, "text": "Is there a visible white or light outline (a sticker halo) around the cartoon character?"},
+  {"id": "floating", "severity": "P1", "lo": 0.5, "hi": 0.85, "text": "Does the cartoon character look like it is floating above the ground, with no contact shadow under its feet?"},
+  {"id": "glitch", "severity": "P0", "lo": 0.7, "hi": 0.88, "text": "Is there an obvious rendering glitch: a hard seam, a smear, a stretched texture, or a missing part?"},
+  {"id": "off_model", "severity": "P1", "lo": 0.5, "hi": 0.85, "needs_refs": true, "text": "Does the cartoon character look clearly different from the reference model sheet (wrong colours, wrong proportions, thinner or taller, missing features)?"}
+]

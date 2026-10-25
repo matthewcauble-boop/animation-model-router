@@ -1,0 +1,10 @@
+[
+  {"id": "face_cut", "severity": "P1", "lo": 0.6, "hi": 0.88, "text": "Is any character's face cut off by the edge of the frame?"},
+  {"id": "text_cut", "severity": "P0", "lo": 0.6, "hi": 0.85, "text": "Is any on-screen text (caption, speech bubble, title) cut off by the frame edge, or drawn over a character's face?"},
+  {"id": "intersect", "severity": "P1", "lo": 0.85, "hi": 0.97, "text": "Do any characters or objects visibly intersect or pass through each other (a hand through a table, a body through a wall)?"},
+  {"id": "glitch", "severity": "P0", "lo": 0.7, "hi": 0.88, "text": "Is there an obvious rendering glitch: a hard seam or line across a surface, a smear, a stretched texture, or a missing part?"},
+  {"id": "text_garbled", "severity": "P1", "lo": 0.6, "hi": 0.85, "text": "Is any visible word misspelled, garbled or only partly formed?"},
+  {"id": "empty_frame", "severity": "P1", "lo": 0.1, "hi": 0.5, "text": "Is the picture mostly one flat field of colour with no clear subject, so a viewer could not tell what they are looking at?"},
+  {"id": "text_over_busy", "severity": "P2", "lo": 0.3, "hi": 0.6, "text": "Is any caption or on-screen text drawn on top of a busy object so that it is hard to read?"},
+  {"id": "off_model", "severity": "P1", "lo": 0.5, "hi": 0.85, "needs_refs": true, "text": "Does any character look clearly different from the reference model sheet (wrong colours, wrong proportions, missing features)?"}
+]

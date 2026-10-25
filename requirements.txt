@@ -1,0 +1,6 @@
+numpy>=1.24
+Pillow>=10.0
+opencv-python-headless>=4.8
+# optional: on-screen text boxes for frameqa's safe-area check
+# rapidocr>=3.0
+# onnxruntime>=1.17

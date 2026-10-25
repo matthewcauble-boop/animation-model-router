@@ -1,0 +1,16 @@
+# secrets
+.env
+.env.*
+*.key
+# caches and outputs
+__pycache__/
+*.pyc
+tools/**/cache/
+cache/
+continuity-*/
+frameqa-*/
+work/
+takes/
+*.mp4
+*.mov
+*.wav

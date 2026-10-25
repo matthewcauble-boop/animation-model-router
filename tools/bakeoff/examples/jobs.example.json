@@ -1,0 +1,30 @@
+{
+ "_note": "One moment = one start frame + one prompt, sent to every model. Prices are list-price ESTIMATES from 2026-10; check the provider's pricing page on the day.",
+ "uploads": {
+  "m3_start": "inputs/m3-closeup-start.png",
+  "m1_frame": "inputs/twoshot-frame.png",
+  "char_a": "inputs/char-a-sheet.png",
+  "char_b": "inputs/char-b-sheet.png",
+  "m1_vo": "inputs/scene-vo.wav"
+ },
+ "jobs": [
+  {"id": "m3-kling4", "moment": "m3", "model": "Kling 4.0", "endpoint": "kling/v4/image-to-video",
+   "seconds": 6, "price": {"per_s": 0.157},
+   "args": {"image_url": "@m3_start", "duration": 6, "aspect_ratio": "9:16",
+            "prompt": "Character A bursts into a huge belly laugh, mouth wide open, his whole round body squashes down and stretches up with each laugh, shoulders bouncing, then he opens his eyes and grins at the camera. Big, bouncy cartoon squash and stretch, real character acting. Keep the character exactly on-model: same design, colours, proportions and line style as the first frame, no extra limbs, no morphing. Keep his open grin, never clenched teeth. Locked-off camera. No text."}},
+  {"id": "m3-wan30", "moment": "m3", "model": "Wan 3.0", "endpoint": "alibaba/wan-3.0/image-to-video",
+   "seconds": 6, "price": {"per_s": 0.05},
+   "args": {"image_url": "@m3_start", "duration": 6, "resolution": "1080p", "aspect_ratio": "9:16", "audio": false,
+            "enable_prompt_expansion": false,
+            "prompt": "Character A bursts into a huge belly laugh ... (identical prompt to every other m3 take)"}},
+  {"id": "m3-hailuo23", "moment": "m3", "model": "Hailuo 2.3 Standard", "endpoint": "fal-ai/minimax/hailuo-2.3/standard/image-to-video",
+   "seconds": 6, "price": {"flat": 0.28},
+   "args": {"image_url": "@m3_start", "duration": "6", "prompt_optimizer": false,
+            "prompt": "Character A bursts into a huge belly laugh ... (identical prompt to every other m3 take)"}},
+  {"id": "m1-h3max", "moment": "m1", "model": "MiniMax H3 Max reference-to-video (hosted)", "endpoint": "minimax/h3-max/reference-to-video",
+   "seconds": 8, "price": {"per_s": 0.05},
+   "args": {"image_url": "@m1_frame", "reference_image_urls": ["@char_a", "@char_b"], "reference_audio_urls": ["@m1_vo"],
+            "duration": 8, "resolution": "768P", "aspect_ratio": "9:16", "prompt_expansion_mode": "balanced",
+            "prompt": "From 0.4 to 2.6 seconds Character A talks to Character B ... Only the character who is speaking moves their mouth. Character B always wears her round boxing gloves, never fingers."}}
+ ]
+}

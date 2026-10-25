@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1000" height="300" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <text x="500" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">Stills first, then motion, then code, then gates</text>
+
+  <g font-size="14" fill="#222">
+    <rect x="20" y="70" width="170" height="120" rx="10" fill="#eef4ff" stroke="#4a6fb5" stroke-width="2"/>
+    <text x="105" y="98" text-anchor="middle" font-weight="bold">1. Keyframes</text>
+    <text x="105" y="122" text-anchor="middle">character sheets</text>
+    <text x="105" y="142" text-anchor="middle">one master plate</text>
+    <text x="105" y="162" text-anchor="middle">every shot as a still</text>
+
+    <rect x="215" y="70" width="150" height="120" rx="10" fill="#fff4e6" stroke="#c07a1a" stroke-width="2"/>
+    <text x="290" y="98" text-anchor="middle" font-weight="bold">2. Stills gate</text>
+    <text x="290" y="122" text-anchor="middle">side-by-side strip</text>
+    <text x="290" y="142" text-anchor="middle">continuity --stills</text>
+    <text x="290" y="162" text-anchor="middle">human picks</text>
+
+    <rect x="390" y="70" width="170" height="120" rx="10" fill="#eefbea" stroke="#3d8b3d" stroke-width="2"/>
+    <text x="475" y="98" text-anchor="middle" font-weight="bold">3. Motion model</text>
+    <text x="475" y="122" text-anchor="middle">routed per moment</text>
+    <text x="475" y="142" text-anchor="middle">(ROUTING.md)</text>
+    <text x="475" y="162" text-anchor="middle">2 takes, pick one</text>
+
+    <rect x="585" y="70" width="170" height="120" rx="10" fill="#f5eefc" stroke="#7a4ab5" stroke-width="2"/>
+    <text x="670" y="98" text-anchor="middle" font-weight="bold">4. Code + edit</text>
+    <text x="670" y="122" text-anchor="middle">numbers, text, diagrams</text>
+    <text x="670" y="142" text-anchor="middle">ones / twos / threes</text>
+    <text x="670" y="162" text-anchor="middle">subtitles bottom third</text>
+
+    <rect x="780" y="70" width="200" height="120" rx="10" fill="#fdeeee" stroke="#b54a4a" stroke-width="2"/>
+    <text x="880" y="98" text-anchor="middle" font-weight="bold">5. Cut gates</text>
+    <text x="880" y="122" text-anchor="middle">continuity + frameqa</text>
+    <text x="880" y="142" text-anchor="middle">any confirmed P0 fails</text>
+    <text x="880" y="162" text-anchor="middle">reviewer opens flagged only</text>
+  </g>
+
+  <g stroke="#555" stroke-width="2" marker-end="url(#ar)">
+    <line x1="190" y1="130" x2="212" y2="130"/>
+    <line x1="365" y1="130" x2="387" y2="130"/>
+    <line x1="560" y1="130" x2="582" y2="130"/>
+    <line x1="755" y1="130" x2="777" y2="130"/>
+  </g>
+
+  <g fill="none" stroke="#b54a4a" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar)">
+    <path d="M290 190 C 290 240, 105 240, 105 194"/>
+    <path d="M880 190 C 880 270, 475 270, 475 194"/>
+  </g>
+  <g font-size="12" fill="#b54a4a">
+    <text x="197" y="252" text-anchor="middle">fail: re-roll the still (~$0.14)</text>
+    <text x="680" y="282" text-anchor="middle">fail: retake the shot ($0.30-2.80) or fix in code</text>
+  </g>
+</svg>

@@ -1,0 +1,62 @@
+{
+ "name": "kitchen-scene-01",
+ "characters": {
+  "a": {
+   "name": "Character A",
+   "desc": "a round orange cartoon fruit hero with big oval eyes, a green leaf on top, muscular arms, a belt and green trousers",
+   "refs": ["refs/a-front.png", "refs/a-three-quarter.png"],
+   "facing": "camera",
+   "color": {"hsv": [[8, 150, 120], [22, 255, 255]], "min_area": 0.004, "shape": "round"},
+   "traits": [
+    {"id": "thin_arms", "q": "Are his arms thin or noodle-like instead of big and muscular?", "severity": "P1"},
+    {"id": "dot_eyes", "q": "Are his eyes small dots instead of big ovals?", "severity": "P0"},
+    {"id": "clenched_teeth", "q": "Is he showing a clenched row of separate teeth instead of an open grin?", "severity": "P1"}
+   ]
+  },
+  "b": {
+   "name": "Character B",
+   "desc": "a cartoon unicorn girl with a braided mane who wears round purple boxing gloves with yellow stars",
+   "refs": ["refs/b-front.png"],
+   "facing": "camera",
+   "traits": [
+    {"id": "fingers", "q": "Does she show bare fingers, a thumb or a hand instead of round boxing gloves?", "severity": "P0", "lo": 0.5, "hi": 0.8},
+    {"id": "mane", "q": "Does she have a long loose flowing mane instead of a braid?", "severity": "P1"}
+   ]
+  },
+  "c": {
+   "name": "Character C",
+   "desc": "a small round dark-blue berry sidekick with no arms or legs",
+   "refs": ["refs/c-front.png"],
+   "traits": [
+    {"id": "limbs", "q": "Does it have any arms, hands, legs or feet?", "severity": "P0"},
+    {"id": "eyelashes", "q": "Do its eyes have eyelashes?", "severity": "P0", "lo": 0.6, "hi": 0.9}
+   ]
+  }
+ },
+ "props": {
+  "bowl": {"q": "Is a bowl of cherries visible on the counter?"},
+  "jug": {"q": "Is a glass jug of milk visible on the counter?"},
+  "oven_light": {"q": "Is the oven light on (a warm glow in the oven window)?"}
+ },
+ "set": {
+  "master": "frames/master-plate.png",
+  "checks": [
+   {"id": "same_room", "q": "Is this the SAME kitchen as the reference image (same cabinets, same counter, same wall colour)?", "bad": "no", "severity": "P0"},
+   {"id": "same_light", "q": "Is the light coming from the same direction and at the same time of day as the reference image?", "bad": "no", "severity": "P1"}
+  ]
+ },
+ "screen_direction": [{"left": "a", "right": "b"}],
+ "shots": [
+  {"id": "S1", "start": 0.0, "end": 3.5, "keyframe": "frames/S1.png",
+   "present": {"a": {"where": "standing behind the counter on the left"}, "b": {"where": "standing behind the counter on the right"}},
+   "absent": ["c"], "side": {"a": "left", "b": "right"},
+   "props": {"bowl": true, "jug": true}},
+  {"id": "S2", "start": 3.5, "end": 6.0, "keyframe": "frames/S2.png",
+   "present": {"a": {}, "c": {"where": "sitting on the counter next to the bowl", "required_when": "prop:bowl"}},
+   "absent": ["b"],
+   "gestures": [{"who": "a", "id": "thumbs_up", "q": "holding up one thumbs-up", "from": 0.5, "to": 2.0}]},
+  {"id": "S3", "start": 6.0, "end": 9.0, "keyframe": "frames/S3.png",
+   "present": {"b": {"enters": true}},
+   "props": {"oven_light": {"at": 1.5, "before": false, "after": true}}}
+ ]
+}
