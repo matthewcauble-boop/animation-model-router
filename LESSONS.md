@@ -138,7 +138,7 @@ every frame for fractions of a cent, and the expensive reviewer only looks at wh
 | Bands | pass >= 0.7, fail <= 0.3; the band between is "unsure" and escalates to a bigger vision model |
 
 **What worked:**
-- **Boxing body and legs separately and comparing in code** beats asking "are the legs too long?". On-model frames
+- **Putting separate boxes round the body and the legs and comparing them in code** beats asking "are the legs too long?". On-model frames
   measured 0.1-0.84 and stretched ones 0.87-1.56: a clean gap. The direct question sat at 0.3-0.5 on stretched frames.
   Adding the ratio to the learned layer took the on-model verdict from 81% to 95% on train.
 - **A Choice for named positions** (hand spacing: together / shoulder width / wide) with code mapping the line to the

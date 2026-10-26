@@ -11,8 +11,8 @@ fingers on a gloved character, extra or missing limbs, and design swaps. Total s
 $55.
 
 **The cast used in the tests** (so the failure modes make sense):
-- **Character A:** a round cartoon fruit hero with big oval eyes, a leaf, big muscular arms, a belt and trousers.
-- **Character B:** a cartoon unicorn who wears round boxing gloves and never has fingers.
+- **Character A:** a round mascot with short legs and big arms.
+- **Character B:** a character whose hands are round mittens (no fingers, ever).
 - Both are flat 2D cel characters with bold black outlines, usually placed in a photoreal set.
 
 Model ids are given as fal.ai endpoints (pay per call) and, where tested, Higgsfield model names (credit plans).
@@ -28,7 +28,7 @@ Prices are list prices seen in 2026-10; check the provider before you spend.
 | New on-model pose still | **GPT Image 2 high** (8.0, 3/3) | Seedream 5 Pro / FLUX Kontext Max (5.3) | Nano Banana 2.1 (put two versions in one image) |
 | Package / label mockup with exact text | **Nano Banana Pro** (8.0) | Nano Banana 2.1 (7.8), Seedream 5 Pro (7.7), GPT Image 2 (7.5) | FLUX.2 Max (3.8), FLUX Kontext Max (3.3) |
 | Talking two-shot, lip-synced to your own VO | **MiniMax H3 Max reference-to-video, hosted** (7.3, 3/3) | Seedance 2.0 reference + audio (6.0) | LTX-2.5 audio-to-video (cut short), Wan 3.0 / Seedance 2.5 ref + audio (4.3) |
-| Full-body action holding a prop | **Seedance 2.5** for the gloved character (6.3, 3/3); **Kling 4.0 / Wan 3.0** for the round hero (5.7-5.8) | Kling 4.0 | Hailuo 2.3 (2.3-2.7: the prop floats free), Veo 3.1 Fast (design swaps) |
+| Full-body action holding a prop | **Seedance 2.5** for the gloved character (6.3, 3/3); **Kling 4.0 / Wan 3.0** for the round mascot (5.7-5.8) | Kling 4.0 | Hailuo 2.3 (2.3-2.7: the prop floats free), Veo 3.1 Fast (design swaps) |
 | Expressive reaction close-up | **Kling 4.0** (7.2, 3/3) | Seedance 2.5 (6.0) | Happy Horse 1.1 (4.0) |
 | Cartoon hand/glove handling real food or props (overhead) | **Wan 3.0** (6.5, 2/3) | Happy Horse 1.1 (5.8), Kling 4.0 (5.7) | Hailuo 2.3 (3.0), Veo 3.1 Fast (the glove vanishes) |
 | Food hero: thick liquid (honey, syrup) | **Wan 3.0** (7.5, 3/3) | Hailuo 2.3 Standard (6.2) | Veo (jelly blob), Happy Horse (CG rings) |
@@ -70,7 +70,7 @@ Covered in depth in [KEYFRAMES.md](KEYFRAMES.md). The short version:
   ```
   <Character A> and <Character B> stand side by side on a plain white background, both full body, feet visible:
   <pose for A>; <pose for B>. Use the exact same character designs, line style, colours and proportions as the
-  reference images: flat 2D cartoon, bold black outlines, flat colours. <Character B> wears her round boxing gloves
+  reference images: flat 2D cartoon, bold black outlines, flat colours. <Character B> keeps her round mitten hands
   on both hands, no fingers. No text.
   ```
 - **Failure modes:** thin arms on a muscular character (add "huge rounded biceps like the reference"); Seedream and
@@ -117,7 +117,7 @@ Covered in depth in [KEYFRAMES.md](KEYFRAMES.md). The short version:
 
 - **Gloved character: Seedance 2.5 image-to-video.** fal `bytedance/seedance-2.5/us/image-to-video`, `duration "6"`,
   720p, 9:16, `generate_audio false`. About **$2.77 per 6 s**, the most expensive per second.
-- **Round hero: Kling 4.0 image-to-video.** fal `kling/v4/image-to-video`, `duration 6`, 1080p, $0.157/s; or Higgsfield
+- **Round mascot: Kling 4.0 image-to-video.** fal `kling/v4/image-to-video`, `duration 6`, 1080p, $0.157/s; or Higgsfield
   `kling4_0 --mode image-to-video`, 6 credits per 6 s, **the cheapest good option**. Wan 3.0 i2v tied (`audio false`,
   `enable_prompt_expansion false`, $0.05/s).
 - **Prompt:** one action described as beats ("dips, drives up, twice, holds and grins"), then the **LOCK line**:
@@ -125,11 +125,11 @@ Covered in depth in [KEYFRAMES.md](KEYFRAMES.md). The short version:
   limbs, no morphing. Locked-off camera. No text." plus any character rule (gloves).
 - **Start frame rules (every critic marked every take down for these):**
   - cut it from a clean **action/pose sheet**, not a busy promo illustration (those carry floor props and off-model
-    details such as a different mane);
+    details such as a different hairstyle);
   - no loose props on the floor;
   - **the prop is already in the hands in frame 0**; the motion starts at rest, not mid-lift.
 - **Failure modes:** the prop floats free of the hands (Hailuo, Happy Horse); a limb lets go and swells (Hailuo); design
-  swaps such as white gloves or blue eyes (Veo 3.1 Fast). Every take scored 6.3 or less, so make 2 takes and pick.
+  swaps such as recoloured hands or changed eye colour (Veo 3.1 Fast). Every take scored 6.3 or less, so make 2 takes and pick.
 
 ## 6. Expressive reaction close-up
 
@@ -148,9 +148,9 @@ Covered in depth in [KEYFRAMES.md](KEYFRAMES.md). The short version:
   "top-down"; GPT Image 2 also works. **Make the start still with a near-empty pan and a full bowl** so the pour reads.
 - **Video: Wan 3.0 i2v.** fal `alibaba/wan-3.0/image-to-video`, `duration 6`, 1080p, 9:16, `audio false`,
   `enable_prompt_expansion false`. **$0.30 per 6 s.**
-- **Prompt:** "Locked-off top-down shot. The cartoon purple star boxing glove keeps tipping the glass bowl and the frozen
-  berries pour out and tumble into the steel saucepan ... The glove stays a flat 2D cartoon with a bold black outline
-  and no fingers; the pot, berries and counter stay photoreal."
+- **Prompt:** "Locked-off top-down shot. The cartoon mitten hand keeps tipping the glass bowl and the frozen
+  fruit pours out and tumbles into the steel saucepan ... The hand stays a flat 2D cartoon with a bold black outline
+  and no fingers; the pot, fruit and counter stay photoreal."
 - **Why it won:** the only take where the pan fills and the bowl visibly empties.
 - **Failure modes:** the glove rests on the bowl instead of gripping it; the bowl stays full while food keeps arriving
   (Hailuo); the glove vanishes and the bowl flies off (Veo).

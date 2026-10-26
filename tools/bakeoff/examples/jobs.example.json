@@ -25,6 +25,6 @@
    "seconds": 8, "price": {"per_s": 0.05},
    "args": {"image_url": "@m1_frame", "reference_image_urls": ["@char_a", "@char_b"], "reference_audio_urls": ["@m1_vo"],
             "duration": 8, "resolution": "768P", "aspect_ratio": "9:16", "prompt_expansion_mode": "balanced",
-            "prompt": "From 0.4 to 2.6 seconds Character A talks to Character B ... Only the character who is speaking moves their mouth. Character B always wears her round boxing gloves, never fingers."}}
+            "prompt": "From 0.4 to 2.6 seconds Character A talks to Character B ... Only the character who is speaking moves their mouth. Character B always keeps her round mitten hands, never fingers."}}
  ]
 }

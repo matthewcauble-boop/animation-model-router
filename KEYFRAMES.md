@@ -23,7 +23,7 @@ For each character, make (or take from the official art) a small set of sheets a
   characters and draw duplicates).
 
 Never let a model freely redraw a character from a text description. Drift seen in testing: dot eyes instead of ovals,
-a peel texture on a smooth character, gloves drawn as bare hands, once a horse.
+a surface texture on a smooth character, mitten hands drawn as bare hands, once a different animal.
 
 ## 2. One master plate per set
 
@@ -69,8 +69,8 @@ Image 1 is the locked master frame of our cartoon <show>: <one sentence: set, pr
 Image 2 is the same set, empty. Images 3 and 4 are the official character designs; image 5 shows the poses for
 this shot. Keep the set, props, <light direction> light, colours and the characters' designs, proportions, line
 style and size EXACTLY consistent with image 1: flat 2D cartoon characters with bold black outlines and flat cel
-colours in the photoreal <set>. <Character B> always wears round boxing gloves, never fingers, thumbs or bare
-hands; she gestures with the whole round glove. The <set piece> props (<list>) stay in the same places in every
+colours in the photoreal <set>. <Character B> always has round mitten hands, never fingers, thumbs or bare
+hands; she gestures with the whole round mitten. The <set piece> props (<list>) stay in the same places in every
 shot of this scene. Vertical 9:16. No captions, no added text. THIS SHOT: <framing>. <action, one sentence per
 character>.
 ```

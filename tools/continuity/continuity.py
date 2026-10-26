@@ -8,7 +8,7 @@
 
 frameqa asks "is this frame broken?". This asks "is this frame still the SAME STORY as the last one?":
 who is on screen, how many of them, where, facing which way, whether each character still matches its bible
-(e.g. "the berry sidekick has no limbs", "the gloved character never shows fingers"), whether a held gesture is
+(e.g. "the sidekick has no limbs", "the gloved character never shows fingers"), whether a held gesture is
 still held, whether the props are in the state the story says, and whether screen direction survives each cut.
 
 Stages (see README.md):
