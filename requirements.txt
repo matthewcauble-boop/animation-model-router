@@ -4,3 +4,7 @@ opencv-python-headless>=4.8
 # optional: on-screen text boxes for frameqa's safe-area check
 # rapidocr>=3.0
 # onnxruntime>=1.17
+# optional: tools/hf_run.py (Hugging Face Spaces) and the fal Python client
+# gradio_client>=1.3
+# huggingface_hub>=0.30
+# fal-client>=0.5
