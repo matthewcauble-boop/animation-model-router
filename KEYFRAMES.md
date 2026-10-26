@@ -100,6 +100,14 @@ Generalise it: before sending a shot line, read every verb and ask what anatomy 
 can give separate clenched teeth to a character with one open grin. Rewrite with the parts the character has, and
 state the rule positively in the character's own terms ("gestures with the whole round glove").
 
+### One keyframe per named position
+
+When the script names positions ("wide grip", "close grip", "right leg long"), make **a keyframe for each one**, with
+explicit hand and foot placement in the shot line ("both gloves on the bar far apart, out past the shoulders, arms in
+a wide V"), and animate each with image-to-video with the limbs locked ("the hands stay exactly where they are").
+Motion-copy swaps redraw limbs on the character's own build and can flatten every position into one
+([LESSONS.md](LESSONS.md#2-poses-must-match-not-just-timing)).
+
 ## 6. The keyframe continuity gate
 
 Before any video spend:

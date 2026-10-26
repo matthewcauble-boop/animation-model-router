@@ -1,11 +1,13 @@
 # QA: gates, cheap screens and blind critics
 
-Three tools, each answering a different question, in a fixed order:
+Five tools, each answering a different question:
 
 | Tool | Question | Cost |
 |---|---|---|
 | `tools/continuity/continuity.py` | Is this frame still **the same story** as the last one? | about $0.0001-0.0002 a sample |
 | `tools/frameqa/frameqa.py` | Is this frame **broken**? (glitches, cut-off text, flicker, loudness) | about $0.03-0.04 per minute of video |
+| `tools/vosync/vosync.py` | Does the picture **match what is being said**, at that moment? | free (timing); about $0.001 a line with a vision pass |
+| `tools/judge/judge.py` | Atomic yes/no checks tuned to **your own** approve/reject calls (pose, proportion, alive, layout) | well under $0.001 a frame |
 | Blind critics | Which take is **better**? | 3 fresh LLM agents per round |
 
 The expensive reviewer (a person, or an LLM that reads frames) comes last and opens **only the frames the cheap
@@ -16,7 +18,7 @@ first pass for a few cents.
 
 1. **Keyframe gate** before any video spend: `continuity.py --stills` on all of a scene's start frames. Animate nothing
    until it passes. ([KEYFRAMES.md](KEYFRAMES.md))
-2. **Cut gate** on the rendered cut: `continuity.py`, then `frameqa.py`.
+2. **Cut gate** on the rendered cut: `continuity.py`, then `frameqa.py`, then `vosync.py` on anything with a narrator.
 3. **Any confirmed P0 fails the gate.** Both tools exit with code 1, so they can block a build script.
 4. **Fix every P0 that code can fix** (safe area, black frames, loudness, a missing character in a start frame) and
    re-run. Re-runs are nearly free: answers are cached by frame hash.
@@ -110,6 +112,52 @@ or minor, which is why a human or LLM still looks at `flagged.jpg`.
 **Tips:** `--refs` must be sheets rendered in the same style as the video (a 2D sheet against a 3D render flags every
 frame). Tune a new question from `lo 0.6, hi 0.85` using the probabilities in `report.json`. Use `--every 1 --no-ocr`
 for a cheap first sort of raw takes. `questions.character-swap.json` is a starter set for cartoon-in-live-action work.
+
+## Voice-over sync (vosync)
+
+The rule: **what is on screen matches what is being said, at that moment**
+([LESSONS.md](LESSONS.md#1-on-screen-must-match-whats-said)). `vosync.py` takes the cut and a lines file
+(`[{"id", "start", "end", "text", "shot"?, "kind"?, "screen_text"?}]`, or a build timeline with `vo` and `shots`
+lists; see `tools/vosync/examples/lines.example.json`).
+
+| Check | Sev | Rule |
+|---|---|---|
+| overlap | P0 | two lines overlap |
+| crosses_cut | P1 | a line runs past the end of the shot it starts in: hold the shot, never speed up the voice |
+| early | P1 | a line starts more than 0.3 s before its own shot |
+| wrong_shot | P1 | a line starts in a shot other than the one it is about |
+| switch_timing | P1 | a "switch sides" cue starts 0.3-0.8 s before the cut and ends within 0.9 s after it |
+| picture_mismatch | P0 / P1 | (`--backend fal` or `openai`) a vision model sees the line's frames and says the move or graphic doesn't match; a confident no is P0 |
+| text_mismatch | P1 | (vision pass) the on-screen text is not the line's `screen_text` |
+| judge:verdict | P0 / P2 | (`--judge pose`) on lines that name a position, the line's best frame must pass the pose verdict (grip width, leg long, fold) |
+
+Output: `vosync-<stem>/sheet.jpg` (one strip per line, 4-6 frames, a red divider where a cut falls inside the line),
+`report.md`, `report.json`. **The reviewer must open the sheet**: the timing checks alone passed a cut where five
+different grips were all drawn at the same hand width.
+
+## A fast judge model
+
+`tools/judge/judge.py` is the pattern in [LESSONS.md](LESSONS.md#7-a-fast-judge-model-for-qa): a cheap vision model
+answers atomic questions, code makes the decisions, and a small learned layer is fitted to your own labels.
+
+```
+python tools/judge/judge.py judge cut.mp4 --pack onmodel --ref mascot_sheet=sheets/mascot.png --every 1 --escalate fal
+python tools/judge/judge.py label frame.png verdict:on_model false --evalset evalset/ --note "legs too long after the swap"
+python tools/judge/judge.py fit  --evalset evalset/
+python tools/judge/judge.py eval --evalset evalset/ --split test -v
+```
+
+- **Packs** (`tools/judge/packs.example.json`): proportion, pose, alive, continuity, text, layout, style, and
+  combinations. **Verdicts** are rules over the answers: a Noul that must be yes or no, a Choice whose expected option
+  comes from the spoken line, a box ratio, overlap or edge that must stay under a limit, or a truth table over
+  neighbouring samples (continuity). Each verdict has a gate ("is the character there?"), so an absent character is
+  n/a, not a fail.
+- **Labels:** one `label` command per approve/reject note copies the frame into the eval set and splits it 70/30 by a
+  stable hash. Bad-versus-fixed pairs of the same shot teach it the most.
+- **Calls:** pass >= 0.7, fail <= 0.3, unsure in between; `--escalate` re-asks only the unsure inputs with a bigger
+  model. A clear fail is P0; unsure is P2 (look at it).
+- **Backends:** TypeSafe Jev (typed questions with calibrated probabilities, Box for layout), fal's vision router,
+  any OpenAI-compatible vision endpoint, or local Ollama.
 
 ## Delivery rules the gates enforce
 

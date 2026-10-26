@@ -202,6 +202,16 @@ From a separate series of blind tests (scores out of 25, 3 critics a shot).
 - **Where it fails:** round or wide mascots get drawn taller and slimmer; quadrupeds and limbless blobs fail whatever
   the prompt says (route them elsewhere or don't offer them); people who are small, at the frame edge or only in part
   of the clip need a fallback model.
+- **Proportion stretch (measure it):** motion-copy swaps pull a cartoon toward the performer's build: long legs,
+  slim arms, taller and thinner. Box the body and the legs separately and compare the leg/body height ratio in code
+  with the character sheet's (`tools/judge/`, proportion pack). In one test the sheet measured 0.80, a plain swap
+  1.41, and the **same swap anchored on an on-model first frame** (an image-edit still in the performer's starting
+  pose, gated first) 0.86. That anchor is the first fix; keyframes per position plus image-to-video is the second (on
+  model, but you lose the exact motion). A skeleton retarget needs a model that takes a pose video (Wan VACE pose,
+  `fal-ai/wan-vace-14b/pose`); a stick-figure video fed to a generic motion-control model came back as a stick
+  figure. See [LESSONS.md](LESSONS.md#3-motion-copy-swaps-stretch-cartoon-proportions).
+- **Poses get flattened too:** the swap redraws limbs on the character's own build and can erase pose differences
+  (five grips at one hand width). Check named positions in frames; fix with one keyframe per position.
 - **Fallbacks:** a specialised replace-object model (e.g. Higgsfield's) for soft or painterly styles and hero talking
   close-ups (+1-2 there); a self-hosted open animate model (Apache-2.0) when the hosted one keeps redrawing stocky
   proportions.
