@@ -1,5 +1,7 @@
 # animation-model-router
 
+> **Using an AI agent?** Give it this repo's link and ask it to set things up. It should start with [AGENTS.md](AGENTS.md).
+
 A field guide, plus small tools, for **routing AI animation work to the right model** for each moment of a shot.
 It comes from a studio making short cartoon videos: flat 2D characters, often in photoreal sets, mostly vertical
 9:16, lots of food and talking. The numbers come from blind, same-input bake-offs run in **2026-10**.
