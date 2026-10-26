@@ -14,3 +14,9 @@ takes/
 *.mp4
 *.mov
 *.wav
+# spend ledgers, outputs, your own eval data
+spend-ledger.csv
+outputs/
+vosync-*/
+tools/judge/model.json
+evalset/

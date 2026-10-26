@@ -1,0 +1,55 @@
+{
+ "_about": "Packs say which questions to ask; verdicts say how code turns answers into pass / fail / unsure. A verdict's all_ok terms each give p_ok in 0..1 and the verdict takes the lowest. Once a verdict has >= 20 labelled train rows, `judge.py fit` replaces the rule with a logistic layer over `features` (model.json). Edit the wording in questions/*.json, never here.",
+ "packs": {
+  "proportion": {"groups": ["proportion"], "verdicts": ["on_model"]},
+  "pose": {"groups": ["pose"], "verdicts": ["grip_matches_label", "pose_matches_label"]},
+  "alive": {"groups": ["alive"], "verdicts": ["alive_hold"]},
+  "continuity": {"groups": ["continuity"], "verdicts": ["continuity_ok"]},
+  "text": {"groups": ["text"], "verdicts": ["text_ok"]},
+  "layout": {"groups": ["layout"], "verdicts": ["overlay_clear_of_character", "subtitle_in_safe_area"]},
+  "style": {"groups": ["style"]},
+  "onmodel": {"groups": ["proportion", "alive"], "verdicts": ["on_model", "alive_hold"]},
+  "workout": {"groups": ["pose", "layout"], "ids": ["text_over_face", "text_cut_by_edge"], "verdicts": ["grip_matches_label", "pose_matches_label", "overlay_clear_of_character"]},
+  "all": {"groups": ["proportion", "pose", "alive", "continuity", "text", "layout", "style"],
+          "verdicts": ["on_model", "grip_matches_label", "pose_matches_label", "alive_hold", "continuity_ok", "text_ok", "overlay_clear_of_character"]}
+ },
+ "verdicts": {
+  "on_model": {
+   "gate": "mascot_present",
+   "all_ok": [
+    {"derived": "ratio:box_mascot_legs/box_mascot_body", "max": 0.95, "soft": 0.2},
+    {"q": "mascot_human_parts", "want": false},
+    {"q": "mascot_fingers_visible", "want": false},
+    {"q": "mascot_body_round", "want": true}
+   ],
+   "features": ["ratio:box_mascot_legs/box_mascot_body", "mascot_body_round", "mascot_big_arms", "mascot_human_parts", "mascot_fingers_visible", "mascot_on_model_score"]
+  },
+  "grip_matches_label": {
+   "gate": "pose_hanging_from_bar", "needs_label": true,
+   "all_ok": [{"q": "pose_hand_spacing", "expect_from_label": {"wide": "wide", "close": "hands_together", "narrow": "hands_together", "normal": "shoulder_width", "shoulder": "shoulder_width"}}]
+  },
+  "pose_matches_label": {
+   "needs_label": true,
+   "all_ok": [
+    {"q": "pose_lean", "expect_from_label": {"fold": "folded_forward", "sit tall": "upright", "lie back": "lying_back"}}
+   ]
+  },
+  "alive_hold": {
+   "all_ok": [{"q": "alive_body_moved", "want": true}],
+   "features": ["alive_expression_changed", "alive_body_moved", "alive_eyes_open"]
+  },
+  "continuity_ok": {"type": "sequence", "presence": ["cont_mascot_present", "cont_sidekick_present", "cont_prop_present"]},
+  "text_ok": {
+   "gate": "text_present",
+   "all_ok": [{"q": "text_cut_by_edge", "want": false}, {"q": "text_over_face", "want": false}]
+  },
+  "overlay_clear_of_character": {
+   "gate": "lay_overlay_present",
+   "all_ok": [{"derived": "overlap:box_overlay/box_character", "max": 0.05, "soft": 0.1}]
+  },
+  "subtitle_in_safe_area": {
+   "gate": "lay_subtitle_present",
+   "all_ok": [{"derived": "bottom:box_subtitle", "max": 0.78, "soft": 0.03}]
+  }
+ }
+}

@@ -1,0 +1,67 @@
+{
+  "group": "proportion",
+  "about": "On-model checks for a generic mascot against its sheet. Pass the sheet with --ref mascot_sheet=path. The leg/body ratio is computed in code from the two boxes; never ask 'are the legs too long?'.",
+  "questions": {
+    "mascot_present": {
+      "type": "noul",
+      "instructions": "Is the mascot, a round cartoon character with a big ball-shaped body, short legs and big gloved hands, in `frame`?"
+    },
+    "mascot_body_round": {
+      "type": "noul",
+      "companion": "mascot_present",
+      "instructions": "Is the mascot's body in `frame` a big round ball, about as round as in `mascot_sheet`?",
+      "criteria": {
+        "true": "The body is a round ball, about as wide as it is tall.",
+        "false": "The body is squashed, stretched tall, or pear-shaped."
+      },
+      "needs": [
+        "mascot_sheet"
+      ]
+    },
+    "mascot_big_arms": {
+      "type": "noul",
+      "companion": "mascot_present",
+      "instructions": "Does the mascot in `frame` have thick, rounded arms like in `mascot_sheet`?",
+      "needs": [
+        "mascot_sheet"
+      ]
+    },
+    "mascot_human_parts": {
+      "type": "noul",
+      "companion": "mascot_present",
+      "instructions": "Does the mascot in `frame` show a realistic human body part, such as human skin, a human head or a human torso?"
+    },
+    "mascot_fingers_visible": {
+      "type": "noul",
+      "companion": "mascot_present",
+      "instructions": "Can you see separate fingers or a thumb on the mascot's hands in `frame`?",
+      "criteria": {
+        "true": "At least one hand shows separate fingers or a thumb.",
+        "false": "Every visible hand is a round glove with no separate fingers."
+      }
+    },
+    "mascot_on_model_score": {
+      "type": "score",
+      "companion": "mascot_present",
+      "instructions": "How closely does the shape of the mascot in `frame` match `mascot_sheet`?",
+      "criteria": [
+        "Its shape is clearly different from the sheet: a different body, very different limb lengths, or a different character.",
+        "It is recognisable, but one part of its shape is clearly off, such as long legs, thin arms or a stretched body.",
+        "Its body, arms and legs have the same shapes and proportions as on the sheet."
+      ],
+      "needs": [
+        "mascot_sheet"
+      ]
+    },
+    "box_mascot_body": {
+      "type": "box",
+      "companion": "mascot_present",
+      "instructions": "the mascot's round ball-shaped body in `frame`, from the top of the body to the waist, not including arms or legs"
+    },
+    "box_mascot_legs": {
+      "type": "box",
+      "companion": "mascot_present",
+      "instructions": "the mascot's legs in `frame`, from the waist down to the soles of the feet"
+    }
+  }
+}

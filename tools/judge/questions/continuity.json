@@ -1,0 +1,18 @@
+{
+  "group": "continuity",
+  "about": "Presence per sample; the sequence verdict (clearly present before, clearly gone now) is a truth table in code. Ask the positive question ('is X there?'), never 'is X gone?'.",
+  "questions": {
+    "cont_mascot_present": {
+      "type": "noul",
+      "instructions": "Is the mascot, a round cartoon character with a big ball-shaped body, short legs and big gloved hands, in `frame`?"
+    },
+    "cont_sidekick_present": {
+      "type": "noul",
+      "instructions": "Is the small sidekick, a tiny round cartoon creature with no arms or legs, in `frame`?"
+    },
+    "cont_prop_present": {
+      "type": "noul",
+      "instructions": "Is the prop for this scene, a red ball, in `frame`?"
+    }
+  }
+}

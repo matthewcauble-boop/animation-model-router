@@ -1,0 +1,59 @@
+{
+ "_note": "Times in seconds in the cut. 'shot' = the shot the line is about; 'kind: switch' = a cue that leads into the next shot; 'screen_text' = the caption that should be on screen while the line plays. Two faults are left in on purpose: L3 overlaps L2 (P0) and L5 runs past the end of S2 (P1, fix by holding S2 longer).",
+ "shots": [
+  {
+   "id": "S1",
+   "start": 0.0,
+   "end": 6.0
+  },
+  {
+   "id": "S2",
+   "start": 6.0,
+   "end": 12.0
+  },
+  {
+   "id": "S3",
+   "start": 12.0,
+   "end": 18.0
+  }
+ ],
+ "vo": [
+  {
+   "id": "L1",
+   "start": 0.4,
+   "end": 3.0,
+   "shot": "S1",
+   "text": "Sit tall and reach your right leg out long.",
+   "screen_text": "Right leg long"
+  },
+  {
+   "id": "L2",
+   "start": 3.4,
+   "end": 5.6,
+   "shot": "S1",
+   "text": "Fold forward over that leg and breathe."
+  },
+  {
+   "id": "L3",
+   "start": 5.4,
+   "end": 6.4,
+   "kind": "switch",
+   "text": "Now switch sides."
+  },
+  {
+   "id": "L4",
+   "start": 6.5,
+   "end": 9.5,
+   "shot": "S2",
+   "text": "Left leg long, fold forward.",
+   "screen_text": "Left leg long"
+  },
+  {
+   "id": "L5",
+   "start": 11.0,
+   "end": 13.2,
+   "shot": "S2",
+   "text": "Keep breathing, slow and soft."
+  }
+ ]
+}

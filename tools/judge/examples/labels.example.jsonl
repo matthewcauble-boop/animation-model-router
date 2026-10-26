@@ -1,0 +1,5 @@
+{"image": "frames/3f2a9c1b7e.png", "q": "verdict:on_model", "expect": false, "state": {}, "split": "train", "note": "after the swap: legs far too long for the sheet", "added": "2026-10-25"}
+{"image": "frames/8be41d07a2.png", "q": "verdict:on_model", "expect": true, "state": {}, "split": "train", "note": "same shot, anchored on an on-model first frame: approved", "added": "2026-10-25"}
+{"image": "frames/5c0d6e9f11.png", "q": "verdict:grip_matches_label", "expect": false, "state": {"on_screen_label": "Wide grip, pull up"}, "split": "test", "note": "hands at shoulder width on a wide-grip line", "added": "2026-10-25"}
+{"image": "frames/a17b2c3d4e.png", "q": "mascot_fingers_visible", "expect": true, "state": {}, "split": "train", "note": "a thumb appeared on the glove", "added": "2026-10-25"}
+{"image": "frames/b2c3d4e5f6.png", "q": "verdict:alive_hold", "expect": false, "state": {"previous_frame": "frames/b1c2d3e4f5.png"}, "split": "train", "note": "frozen hold, only a code bob", "added": "2026-10-25"}

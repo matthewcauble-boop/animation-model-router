@@ -15,6 +15,16 @@ tools/
   bakeoff/critic_pack.py      anonymise + shuffle takes per blind critic
   bakeoff/tally.py            decode critic votes into a table
   bakeoff/examples/           jobs, mapping and votes examples
+  vosync/vosync.py            does the picture match the voice-over line, at that moment?
+  vosync/examples/            lines.example.json (with two deliberate faults)
+  judge/judge.py              fast judge: question bank + verdicts in code + fitted layer + escalation
+  judge/questions/            example bank for a generic round mascot (edit the wording here only)
+  judge/packs.example.json    packs and verdict rules
+  judge/examples/             labels.example.jsonl (eval-set row format)
+  breathpacer/pacer.py        breath pacer overlay (small circle)
+  breathpacer/hero.py         big guided-breathing panel (disc, ring, countdown, labels)
+  fal_run.py                  one fal queue call with a daily cap, a ledger and a dry run
+  hf_run.py                   call a Hugging Face Space
 ```
 
 Install: `pip install -r requirements.txt` (numpy, Pillow, opencv-python-headless; `rapidocr` + `onnxruntime` optional
@@ -32,6 +42,13 @@ for frameqa's safe-area OCR). ffmpeg and ffprobe must be on PATH.
 | `AMR_CACHE_DIR` | continuity, frameqa | answer cache folder (default `cache/` beside each tool, git-ignored) |
 | `CONTINUITY_SCREEN`, `CONTINUITY_FAL_MODEL`, `CONTINUITY_OLLAMA_MODEL` | continuity | defaults for `--screen`, `--fal-model`, `--ollama-model` |
 | `FRAMEQA_JEV_MODEL`, `FRAMEQA_MAX_SIDE`, `FRAMEQA_BATCH` | vision backends | |
+| `HF_TOKEN` | `hf_run.py` | read token; PRO for more ZeroGPU time |
+| `JUDGE_JEV_MODEL`, `JUDGE_CONTEXT` | judge | default `jev-latest` (Box needs jev-1.14+); one sentence of context sent with every frame |
+| `JUDGE_OPENAI_BASE`, `JUDGE_OPENAI_KEY` | judge `--backend openai` | any OpenAI-compatible vision endpoint |
+| `VOSYNC_OPENAI_BASE`, `VOSYNC_OPENAI_KEY` | vosync `--backend openai` | |
+| `AMR_LEDGER` | judge, fal_run | spend ledger CSV (default `spend-ledger.csv` in the working directory) |
+| `AMR_DAILY_CAP` | fal_run | default daily cap in USD (5.00) |
+| `PACER_FONT_TITLE`, `PACER_FONT_LIGHT`, `PACER_FONT_NUM` | hero.py | font files; else the first system font found |
 
 ## continuity.py
 
@@ -72,6 +89,58 @@ Same frame count, same fps, audio stream copied untouched. Spec and camera modes
 
 See [../BAKEOFF.md](../BAKEOFF.md). `bake.py --dry-run` lists every take with its estimated cost before you spend.
 `--soft-cap` logs a warning; `--hard-cap` refuses to submit.
+
+## vosync.py
+
+```
+python tools/vosync/vosync.py VIDEO --lines LINES.json [--timeline timeline.json] [--frames 5]
+       [--backend none|fal|openai] [--model M] [--kind exercise|explainer] [--judge pose] [--max-cost 0.2]
+```
+
+- Lines: `[{"id", "start", "end", "text", "shot"?, "kind": "switch"?, "screen_text"?}]` or a timeline with `vo` and
+  `shots`. Output `vosync-<stem>/` with `sheet.jpg`, `strips/`, `report.md`, `report.json`. Exit 1 on any P0.
+- Checks and rules: [../QA.md](../QA.md#voice-over-sync-vosync). `--kind explainer` asks whether the graphic or the
+  talking characters illustrate the line instead of whether a move matches.
+
+## judge/
+
+```
+python tools/judge/judge.py judge IMG|VIDEO|DIR --pack P [--ref name=path] [--label "line"] [--every 1.0]
+       [--backend jev|fal|openai|ollama] [--escalate fal|openai|ollama] [--max-cost 1] [--out res.json] [--dry-run]
+python tools/judge/judge.py label IMG <question|verdict:name> <answer> --evalset DIR --note "why" [--prev IMG] [--label TEXT]
+python tools/judge/judge.py fit  --evalset DIR [--min-rows 20]
+python tools/judge/judge.py eval --evalset DIR [--split test|train|all] [--groups pose,verdict] [-v]
+python tools/judge/judge.py questions [--pack P]
+```
+
+- **Question bank** (`questions/*.json`): `{"group", "about", "questions": {id: {"type": "noul"|"choice"|"score"|"box",
+  "instructions", "criteria"?, "companion"?, "needs"?}}}`. Name images in backticks: `frame`, `previous_frame`, a
+  reference passed as `--ref name=path`, and the text `on_screen_label`. A question is only asked when every image
+  it names is available.
+- **Verdict rules** (`packs.example.json`): `all_ok` terms, each giving p_ok: `{"q", "want": true|false}` (Noul),
+  `{"q", "expect_from_label": {"wide": "wide", ...}}` (Choice vs the line), `{"q", "min": 0.75}` (Score),
+  `{"derived": "ratio:a/b" | "overlap:a/b" | "bottom:a", "max", "soft"}` (boxes). The verdict takes the lowest term.
+  `"type": "sequence"` with `presence` ids is the continuity truth table. `features` is what `fit` learns from.
+- **Eval rows** (`<evalset>/labels.jsonl`, format in `examples/labels.example.jsonl`): `{"image", "q", "expect",
+  "state": {"previous_frame"?, "on_screen_label"?}, "split", "note"}`. Keep the eval set and `model.json` out of
+  git if the frames are your characters (both are git-ignored here).
+- Answers are cached by request hash in `cache/judge/`, so re-runs and refits are free.
+
+## breathpacer/
+
+```
+python tools/breathpacer/pacer.py IN.mp4 -o OUT.mp4 [--inhale 5.5 --exhale 5.5] [--color "#E8171C"]
+       [--pos top-left|top-right|bottom] [--x 0.15 --y 0.085] [--size 0.11] [--style ring|glass] [--start 0] [--label]
+python tools/breathpacer/hero.py -o panel.mp4 --w 1080 --h 960 --dur 30 [--color red|gold|#hex] [--t0 1] [--cycles 2]
+python tools/breathpacer/hero.py --overlay IN.mp4 -o OUT.mp4 --x 0 --y 960 --w 1080 --h 960 [--transparent]
+```
+
+Audio is copied untouched. Never place the pacer over a character, a label or the subtitles.
+
+## fal_run.py and hf_run.py
+
+See [../SETUP.md](../SETUP.md). Both have `--dry-run`; `fal_run.py` needs `--est` (your cost estimate) and refuses to
+submit past `--daily-cap`.
 
 ## Windows: no console popups
 

@@ -1,0 +1,25 @@
+{
+  "group": "text",
+  "about": "On-screen text.",
+  "questions": {
+    "text_present": {
+      "type": "noul",
+      "instructions": "Is there any written text in `frame`?"
+    },
+    "text_cut_by_edge": {
+      "type": "noul",
+      "companion": "text_present",
+      "instructions": "Is any word in `frame` cut off by the edge of the picture?"
+    },
+    "text_over_face": {
+      "type": "noul",
+      "companion": "text_present",
+      "instructions": "Does any text in `frame` cover part of a character's face?"
+    },
+    "text_matches_label": {
+      "type": "noul",
+      "companion": "text_present",
+      "instructions": "Does the main text on screen in `frame` say the same thing as `on_screen_label`?"
+    }
+  }
+}

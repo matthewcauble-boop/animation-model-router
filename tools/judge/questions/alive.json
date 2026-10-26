@@ -1,0 +1,18 @@
+{
+  "group": "alive",
+  "about": "Living holds. Needs the previous sample as `previous_frame` (judge.py passes it automatically for video input).",
+  "questions": {
+    "alive_expression_changed": {
+      "type": "noul",
+      "instructions": "Has the character's facial expression, eyes or mouth changed between `previous_frame` and `frame`?"
+    },
+    "alive_body_moved": {
+      "type": "noul",
+      "instructions": "Has the character's body moved at all between `previous_frame` and `frame`, for example breathing, a head tilt or a shift of weight?"
+    },
+    "alive_eyes_open": {
+      "type": "noul",
+      "instructions": "Are the character's eyes open in `frame`?"
+    }
+  }
+}

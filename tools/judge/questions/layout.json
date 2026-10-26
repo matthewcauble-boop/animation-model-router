@@ -1,0 +1,37 @@
+{
+  "group": "layout",
+  "about": "Where things are. Each Box has a companion Noul, because a Box always returns a box. Overlaps are computed in code (overlap:<a>/<b> in packs.example.json).",
+  "questions": {
+    "lay_character_present": {
+      "type": "noul",
+      "instructions": "Is there a cartoon character in `frame`?"
+    },
+    "box_character": {
+      "type": "box",
+      "companion": "lay_character_present",
+      "instructions": "the main cartoon character in `frame`, from the top of the head to the feet"
+    },
+    "lay_overlay_present": {
+      "type": "noul",
+      "instructions": "Is there a small red circle or ring drawn over the picture in `frame`?",
+      "criteria": {
+        "true": "A small red disc or ring is drawn on top of the picture, like an on-screen timer.",
+        "false": "No such overlay."
+      }
+    },
+    "box_overlay": {
+      "type": "box",
+      "companion": "lay_overlay_present",
+      "instructions": "the small red circle or ring drawn over the picture in `frame`"
+    },
+    "lay_subtitle_present": {
+      "type": "noul",
+      "instructions": "Is there a line of subtitle words in `frame`?"
+    },
+    "box_subtitle": {
+      "type": "box",
+      "companion": "lay_subtitle_present",
+      "instructions": "the line of subtitle words in `frame`"
+    }
+  }
+}

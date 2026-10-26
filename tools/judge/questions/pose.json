@@ -1,0 +1,41 @@
+{
+  "group": "pose",
+  "about": "Named positions. Code maps the spoken line or label to the expected option (expect_from_label in packs.example.json), so one Choice covers every grip.",
+  "questions": {
+    "pose_hanging_from_bar": {
+      "type": "noul",
+      "instructions": "Is the character in `frame` hanging from a horizontal bar by its hands?"
+    },
+    "pose_hand_spacing": {
+      "type": "choice",
+      "companion": "pose_hanging_from_bar",
+      "instructions": "How far apart are the two hands of the character hanging from the bar in `frame`?",
+      "criteria": {
+        "hands_together": "The hands touch or nearly touch, close together near the middle of the bar.",
+        "shoulder_width": "The hands are about as far apart as the shoulders, directly above them.",
+        "wide": "The hands are clearly farther apart than the shoulders, out toward the ends of the bar, with the arms in a wide V."
+      }
+    },
+    "pose_leg_straight": {
+      "type": "noul",
+      "instructions": "Is one of the character's legs in `frame` stretched out straight along the floor?",
+      "criteria": {
+        "true": "One leg lies straight along the floor or mat, knee not bent.",
+        "false": "Both legs are bent, or both feet are planted."
+      }
+    },
+    "pose_knee_lifted": {
+      "type": "noul",
+      "instructions": "Is one of the character's knees lifted up toward its chest in `frame`?"
+    },
+    "pose_lean": {
+      "type": "choice",
+      "instructions": "Which way is the character's upper body leaning in `frame`?",
+      "criteria": {
+        "folded_forward": "The chest is bent forward and down over the legs, head lowered.",
+        "upright": "The back is roughly straight up, sitting or standing tall.",
+        "lying_back": "The character is lying on its back or arching backward."
+      }
+    }
+  }
+}

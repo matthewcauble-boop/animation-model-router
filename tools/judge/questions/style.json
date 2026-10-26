@@ -1,0 +1,18 @@
+{
+  "group": "style",
+  "about": "Style. Read it as 'drawn vs 3D or photo', not 'flat vs shaded': soft-shaded cartoon characters score low on 'flat'.",
+  "questions": {
+    "style_drawn_cartoon": {
+      "type": "noul",
+      "instructions": "Is the character in `frame` a drawn cartoon rather than a 3D render or a photo?"
+    },
+    "style_background_photo": {
+      "type": "noul",
+      "instructions": "Is the background of `frame` a real photograph?"
+    },
+    "style_plain_background": {
+      "type": "noul",
+      "instructions": "Is the background of `frame` a plain flat colour or a simple gradient?"
+    }
+  }
+}
