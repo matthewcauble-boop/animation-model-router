@@ -20,3 +20,9 @@ outputs/
 vosync-*/
 tools/judge/model.json
 evalset/
+# explainer-critic: reference captions and downloads stay private (never commit a third party's captions)
+refs/
+corpus/
+*.vtt
+tools/explainer-critic/**/analysis/
+explainer-critic-*/

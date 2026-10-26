@@ -67,6 +67,7 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [LESSONS.md](LESSONS.md) | Production lessons: on screen matches what's said, poses match, proportion stretch in swaps, living holds, stretches hold, breath pacer, a fast judge model, paid-API locks and budgets, storyboard and cinematography rules |
 | [SETUP.md](SETUP.md) | fal and Hugging Face routes: keys, the queue API, model ids per job with list prices, Spaces, Inference Providers, Endpoints and Jobs, licences for self-hosting, which route when |
 | [VOICES.md](VOICES.md) | Character voices with consent: design a voice from a description, train an open model (GPT-SoVITS, F5-TTS, Chatterbox, XTTS-v2, StyleTTS2, Kokoro, Qwen3-TTS) with licences, recording and cleaning, evaluation, delivery and lip-sync rules |
+| [EXPLAINER-CRITIC.md](EXPLAINER-CRITIC.md) | Measure an explainer channel you admire into a bible (pacing, hook, turns, comparisons, picture changes), score scripts and cuts against it with a copy guard, a blind critic agent, and the write-score-rewrite loop |
 
 ## The tools
 
@@ -85,6 +86,9 @@ All Python 3.10+, ffmpeg/ffprobe on PATH. `pip install -r requirements.txt`.
 | `tools/vosync/vosync.py` | Does the picture match the voice-over line, at that moment? Strips per line, timing checks, optional vision yes/no | nothing (timing); `FAL_KEY` or an OpenAI-compatible key for the vision pass |
 | `tools/judge/judge.py` | Fast judge: atomic questions per frame, verdicts in code, a logistic layer fitted to your labels, escalation | `TYPESAFE_API_KEY`, or `--backend fal/openai/ollama` |
 | `tools/breathpacer/pacer.py` / `hero.py` | Breath pacer overlay (small circle) and the big guided-breathing panel | nothing (local) |
+| `tools/explainer-critic/build_bible.py` | Reference captions (URLs via yt-dlp, or VTT/SRT files) + optional low-res video -> `bible.json` of pacing and structure targets, Shorts vs long | nothing (heuristic judge); `TYPESAFE_API_KEY`, `FAL_KEY` or an OpenAI-compatible key for model judges; `yt-dlp` for URLs |
+| `tools/explainer-critic/score.py` | Score a script (text, JSON lines, timing CSV, captions) or a cut against a bible: 0-100, P0/P1/P2 at timestamps, copy guard | same |
+| `agents/explainer-critic.md` | Blind critic agent: runs the scorer, returns a verdict, timestamped issues and up to 3 rewrites | an agent runtime (Claude Code style) |
 | `tools/fal_run.py` | One fal queue call: upload, submit, poll, download; daily cap, ledger, stops on a lock; `--dry-run` | `FAL_KEY` |
 | `tools/hf_run.py` | Call a Hugging Face Space (Gradio); `--view` its API; `--dry-run` | `HF_TOKEN`, `gradio_client` |
 | `tools/common/vision.py` | Shared yes/no vision backends (TypeSafe Jev, Gemini, fal OpenRouter, Ollama) | the backend's key |
@@ -112,6 +116,8 @@ python tools/bakeoff/sheet.py takes bakeoff
 
 # does the picture match the voice-over?
 python tools/vosync/vosync.py cut.mp4 --lines timeline.json
+# score an explainer script before recording voices (free heuristic judge)
+python tools/explainer-critic/score.py tools/explainer-critic/example/sample_script.txt --bible tools/explainer-critic/example/bible.example.json
 # fast judge, tuned to your own calls
 python tools/judge/judge.py judge cut.mp4 --pack onmodel --ref mascot_sheet=sheets/mascot.png --every 1
 # breath pacer

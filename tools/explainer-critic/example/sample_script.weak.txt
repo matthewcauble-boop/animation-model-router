@@ -1,0 +1,7 @@
+# Why bread goes stale (weak draft, for comparison)
+
+Today we are going to talk about bread and the process that scientists call starch retrogradation, which is a very interesting and important topic in food science that affects many different products in the supermarket and in our kitchens every single day.
+
+Bread is made from flour, water, yeast and salt. Flour contains starch. Starch is made of amylose and amylopectin. During baking the starch gelatinises. During cooling the amylose recrystallises. Amylopectin recrystallises more slowly over several days. Retrogradation is temperature dependent. Refrigeration accelerates it. Freezing slows it.
+
+In summary, bread goes stale because of starch retrogradation, refrigeration accelerates the process, and freezing slows the process down.

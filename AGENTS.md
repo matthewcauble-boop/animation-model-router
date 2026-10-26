@@ -30,9 +30,14 @@ turned into a cartoon, or a character their kid loves. The episodes are for **pr
    Show the sheet and get a yes before animating; see [STORYBOARD.md](STORYBOARD.md). Then animate: see
    [ROUTING.md](ROUTING.md) for which model to use per moment. Start with
    `python tools/fal_run.py --dry-run` to show costs before spending.
-6. **Voices:** a stock or designed voice, or the parent's own voice trained per [VOICES.md](VOICES.md). Record the
+6. **Score the script before recording voices** (explainers especially): run
+   `python tools/explainer-critic/score.py script.txt --bible bible.json` and the blind critic in
+   [agents/explainer-critic.md](agents/explainer-critic.md), then fix every P0 (no stakes, slow hook, no turn, copied
+   wording). If the person admires an explainer channel, build their own bible from its captions first (captions stay
+   private); otherwise use the example bible. See [EXPLAINER-CRITIC.md](EXPLAINER-CRITIC.md).
+7. **Voices:** a stock or designed voice, or the parent's own voice trained per [VOICES.md](VOICES.md). Record the
    audio first, then lip-sync to it.
-7. **Finish:** cartoon timing on twos ([TIMING.md](TIMING.md)), music, then run the checks in [QA.md](QA.md) and
+8. **Finish:** cartoon timing on twos ([TIMING.md](TIMING.md)), music, then run the checks in [QA.md](QA.md) and
    [LESSONS.md](LESSONS.md). Make sure what's on screen matches what's said, the characters stay on-model and nobody
    freezes. Show the person the result and ask what to change.
 

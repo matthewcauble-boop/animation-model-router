@@ -26,6 +26,10 @@ tools/
   judge/examples/             labels.example.jsonl (eval-set row format)
   breathpacer/pacer.py        breath pacer overlay (small circle)
   breathpacer/hero.py         big guided-breathing panel (disc, ring, countdown, labels)
+  explainer-critic/eclib.py   explainer-critic core: caption/script parsing, metrics, judges (heuristic, Jev, OpenAI-compatible, fal), cut metrics
+  explainer-critic/build_bible.py  reference captions (+ low-res video) -> bible.json of pacing/structure targets
+  explainer-critic/score.py   score a script or cut against a bible; copy guard
+  explainer-critic/example/   bible.example.json, sample_script.txt, sample_script.weak.txt
   fal_run.py                  one fal queue call with a daily cap, a ledger and a dry run
   hf_run.py                   call a Hugging Face Space
 ```
@@ -47,6 +51,7 @@ for frameqa's safe-area OCR). ffmpeg and ffprobe must be on PATH.
 | `FRAMEQA_JEV_MODEL`, `FRAMEQA_MAX_SIDE`, `FRAMEQA_BATCH` | vision backends | |
 | `HF_TOKEN` | `hf_run.py` | read token; PRO for more ZeroGPU time |
 | `JUDGE_JEV_MODEL`, `JUDGE_CONTEXT` | judge | default `jev-latest` (Box needs jev-1.14+); one sentence of context sent with every frame |
+| `EXPLAINER_OPENAI_BASE`, `EXPLAINER_OPENAI_KEY`, `EXPLAINER_OPENAI_MODEL`, `EXPLAINER_FAL_MODEL`, `EXPLAINER_JEV_MODEL` | explainer-critic judges | `--judge openai` / `fal` / `jev` |
 | `JUDGE_OPENAI_BASE`, `JUDGE_OPENAI_KEY` | judge `--backend openai` | any OpenAI-compatible vision endpoint |
 | `VOSYNC_OPENAI_BASE`, `VOSYNC_OPENAI_KEY` | vosync `--backend openai` | |
 | `THIRDS_OPENAI_BASE`, `THIRDS_OPENAI_KEY` | storyboard/thirds.py `--backend openai` | |
@@ -155,6 +160,24 @@ python tools/breathpacer/hero.py --overlay IN.mp4 -o OUT.mp4 --x 0 --y 960 --w 1
 ```
 
 Audio is copied untouched. Never place the pacer over a character, a label or the subtitles.
+
+## explainer-critic/
+
+```
+python tools/explainer-critic/build_bible.py [URL ...] [--urls urls.txt] [--captions DIR] [--videos DIR] [--download-video]
+       [--corpus refs/NAME] [--out bible.json] [--judge heuristic|jev|openai|fal] [--acts heuristic|openai|fal]
+       [--short-max 180] [--holdout 0.2] [--max-videos N] [--max-cost 1.0] [--rebuild] [--dry-run]
+python tools/explainer-critic/score.py SCRIPT|CUT --bible bible.json [--captions cut.srt] [--refs DIR] [--ngram 8]
+       [--judge ...] [--acts ...] [--format auto|short|long] [--wps 2.7] [--max-cost 0.10] [--out DIR] [--quiet]
+```
+
+- Scripts: `.txt`/`.md` (blank line = new paragraph), `.json`/`.jsonl` lines `{"text", "start"?, "end"?, "pause"?}`,
+  `.csv` (`text,start,end`), `.srt`/`.vtt`; a cut is a video plus `--captions`. Untimed scripts are timed at `--wps`.
+- Output `explainer-critic-<name>/` with `report.md` and `score.json`; exit 1 on any P0. The bible holds numbers only;
+  `<corpus>/` (captions, video, per-video analysis) is private and git-ignored.
+- Env: `TYPESAFE_API_KEY` (`--judge jev`, `EXPLAINER_JEV_MODEL`), `FAL_KEY` (`--judge fal`, `EXPLAINER_FAL_MODEL`),
+  `EXPLAINER_OPENAI_BASE` / `EXPLAINER_OPENAI_KEY` / `EXPLAINER_OPENAI_MODEL` (`--judge openai`), `AMR_CACHE_DIR`.
+  Method, targets and the loop: [../EXPLAINER-CRITIC.md](../EXPLAINER-CRITIC.md).
 
 ## fal_run.py and hf_run.py
 

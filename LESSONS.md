@@ -18,6 +18,7 @@ column links it.
 | 10 | [Composition: rule of thirds](#10-composition-rule-of-thirds) | Horizon on a third, eyes on an intersection, lead room, no dead foreground | `tools/storyboard/thirds.py` |
 | 11 | [Screen direction and the 180-degree line](#11-screen-direction-and-the-180-degree-line) | Keep the journey's direction; mirror a plate, never flip a character | [STORYBOARD.md](STORYBOARD.md#direction-and-continuity) |
 | 12 | [Cuts, camera moves and rhythm](#12-cuts-camera-moves-and-rhythm) | Cut on action, match on action, motivated moves ending on a planned end frame, cuts on beats | [STORYBOARD.md](STORYBOARD.md#cuts) |
+| 13 | [Score explainer scripts before recording voices](#13-score-explainer-scripts-before-recording-voices) | Measure a channel you admire into a bible; score and blind-critique every script before VO and every rough cut; learn structure, never copy words | `tools/explainer-critic/`, [EXPLAINER-CRITIC.md](EXPLAINER-CRITIC.md) |
 
 ---
 
@@ -251,3 +252,20 @@ target and a poor first pass.
 - **Motivated camera moves** (push in = this matters, tilt up = where is it coming from?) that end on a planned end
   frame the next shot picks up from. Lock the camera when the action carries the shot.
 - **Rhythm:** cut on beats; hold 5-6 beats for mood, 2-3 for action, about 4 for acting.
+
+## 13. Score explainer scripts before recording voices
+
+- **Pacing and structure are measurable.** Seconds to the first stake or number, where the first "but" lands, comparisons
+  per minute, the longest run of plain facts, words per second, how long the picture sits still. Measure a reference
+  channel you admire into a bible (numbers only) and score every script against it.
+- **Gate the script before any voice spend.** A rewrite is free; a re-recorded voice track and re-synced shots are not.
+  Fix every P0 (no stakes, a hook slower than the reference, no turn, copied wording) before recording.
+- **Use a blind critic, not the writer.** Give it only the script and the bible; it runs the scorer, reads the whole
+  script and returns timestamped issues and up to 3 rewrites. If its call and the score disagree, the critic wins.
+- **Gate the rough cut too:** the same scorer on the cut plus its captions adds picture pacing (no long still
+  stretches, no frozen frames).
+- **Learn structure and rhythm, never words or art.** A copy guard fails any 8-word run shared with the reference
+  captions; keep downloaded captions private and out of git.
+
+**Tool:** `tools/explainer-critic/` (`build_bible.py`, `score.py`, an example bible and sample scripts) and the agent
+`agents/explainer-critic.md`. Guide: [EXPLAINER-CRITIC.md](EXPLAINER-CRITIC.md).
