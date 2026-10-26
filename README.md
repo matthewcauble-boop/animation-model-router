@@ -18,9 +18,11 @@ Models change fast. The method lasts longer than the winners, so the repo includ
    plates and glove-plus-food, and won on prop-light acting. Route by moment.
 3. **Then code for diagrams and text.** Never ask a video model to draw a number, a word, a label or a chart. A code
    layer is exact, free, re-timeable and never drifts. Timing (ones, twos and threes) is applied in the edit too.
-4. **Then QA gates.** Cheap per-frame screens (a continuity checker and a "broken frame" checker) gate every cut; any
-   confirmed P0 fails it. The expensive reviewer opens only flagged frames, and blind fresh-context critics rank takes.
-   A human picks.
+4. **Then QA gates.** Cheap per-frame screens (a continuity checker, a "broken frame" checker, a voice-over sync
+   check and a fast judge tuned to your own calls) gate every cut; any confirmed P0 fails it. The expensive reviewer
+   opens only flagged frames, and blind fresh-context critics rank takes. A human picks.
+5. **What's on screen matches what's said.** Every line lands on the picture it describes, poses included, and held
+   characters stay alive. See [LESSONS.md](LESSONS.md).
 
 ## Quick routing table (2026-10)
 
@@ -39,9 +41,13 @@ Models change fast. The method lasts longer than the winners, so the repo includ
 | Cartoon replacing a person in footage | **Wan 3.0 ref-to-video** + proportion-lock prompt | whole-frame "omni edit" models |
 | Prop-light cartoon acting | **Hailuo 2.3**, finished on twos | |
 | Numbers, words, labels, diagrams, subtitles | **code** | any video model |
+| Named positions (grips, leg long, fold) | **one keyframe per position** + image-to-video, limbs locked | a motion-copy swap (flattens poses) |
+| Held stretch, listening or talking character | **living hold:** lip-sync / ref-to-video from the held still, breathing and blinks | a frozen frame bobbed in code; ping-pong |
+| Breathing guide | **code** (`tools/breathpacer/`) | any video model |
+| Frame QA at scale | **a fast judge** (atomic yes/no, maths in code) + escalation | a big model on every frame |
 
 Full detail per moment (settings, prompt templates, reference recipes, cost per second, failure modes):
-**[ROUTING.md](ROUTING.md)**.
+**[ROUTING.md](ROUTING.md)**. How to call each model on fal or Hugging Face: **[SETUP.md](SETUP.md)**.
 
 ## The guides
 
@@ -53,6 +59,8 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [QA.md](QA.md) | Continuity checker, frameqa, blind critics, the gate rules, delivery rules |
 | [BAKEOFF.md](BAKEOFF.md) | Run your own fair bake-off: principles, moments, critic prompt, log templates |
 | [PERSONAL-USE.md](PERSONAL-USE.md) | Private, non-commercial route: animate from **any** reference image (permissive hosted plus open-weight models), voices without cloning real people |
+| [LESSONS.md](LESSONS.md) | Production lessons: on screen matches what's said, poses match, proportion stretch in swaps, living holds, stretches hold, breath pacer, a fast judge model, paid-API locks and budgets |
+| [SETUP.md](SETUP.md) | fal and Hugging Face routes: keys, the queue API, model ids per job with list prices, Spaces, Inference Providers, Endpoints and Jobs, licences for self-hosting, which route when |
 
 ## The tools
 
@@ -66,6 +74,11 @@ All Python 3.10+, ffmpeg/ffprobe on PATH. `pip install -r requirements.txt`.
 | `tools/bakeoff/bake.py` | Resumable, cost-capped fal bake-off runner with a ledger | `FAL_KEY` |
 | `tools/bakeoff/sheet.py` | Contact sheets, keyframe strips, dense lip-sync sheets | nothing |
 | `tools/bakeoff/critic_pack.py` / `tally.py` | Anonymise + shuffle takes per blind critic; decode votes into a table | nothing |
+| `tools/vosync/vosync.py` | Does the picture match the voice-over line, at that moment? Strips per line, timing checks, optional vision yes/no | nothing (timing); `FAL_KEY` or an OpenAI-compatible key for the vision pass |
+| `tools/judge/judge.py` | Fast judge: atomic questions per frame, verdicts in code, a logistic layer fitted to your labels, escalation | `TYPESAFE_API_KEY`, or `--backend fal/openai/ollama` |
+| `tools/breathpacer/pacer.py` / `hero.py` | Breath pacer overlay (small circle) and the big guided-breathing panel | nothing (local) |
+| `tools/fal_run.py` | One fal queue call: upload, submit, poll, download; daily cap, ledger, stops on a lock; `--dry-run` | `FAL_KEY` |
+| `tools/hf_run.py` | Call a Hugging Face Space (Gradio); `--view` its API; `--dry-run` | `HF_TOKEN`, `gradio_client` |
 | `tools/common/vision.py` | Shared yes/no vision backends (TypeSafe Jev, Gemini, fal OpenRouter, Ollama) | the backend's key |
 | `tools/common/launch_detached.ps1` | Start a long job detached with no console window (Windows) | |
 
@@ -84,14 +97,25 @@ python tools/timing/onestwos.py cut.mp4 --spec timing.json -o cut-timed.mp4
 # a bake-off
 python tools/bakeoff/bake.py bakeoff/jobs.json --dry-run
 python tools/bakeoff/sheet.py takes bakeoff
+
+# does the picture match the voice-over?
+python tools/vosync/vosync.py cut.mp4 --lines timeline.json
+# fast judge, tuned to your own calls
+python tools/judge/judge.py judge cut.mp4 --pack onmodel --ref mascot_sheet=sheets/mascot.png --every 1
+# breath pacer
+python tools/breathpacer/pacer.py cut.mp4 -o cut-pacer.mp4 --pos top-left
+# one hosted call, dry run first
+python tools/fal_run.py alibaba/wan-3.0/image-to-video --upload start=S1.png --est 0.30 --args args.json --dry-run
 ```
 
 More in [tools/README.md](tools/README.md).
 
 ### Keys
 
-Keys are read from environment variables only (`TYPESAFE_API_KEY`, `FAL_KEY`, `GEMINI_API_KEY`), or from a `.env` file
-in the working directory (git-ignored here). Nothing prints a key. Never commit one.
+Keys are read from environment variables only (`TYPESAFE_API_KEY`, `FAL_KEY`, `GEMINI_API_KEY`, `HF_TOKEN`), or from a
+`.env` file in the working directory (git-ignored here). Nothing prints a key. Never commit one. Paid calls append to
+`spend-ledger.csv` (or `$AMR_LEDGER`), and a 401/402/403 stops a job instead of falling back. Setup:
+[SETUP.md](SETUP.md).
 
 ### Running long jobs
 
