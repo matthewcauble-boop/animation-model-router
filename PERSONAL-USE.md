@@ -27,11 +27,14 @@ they recognise, or swap in a generic character. These routes take whatever refer
 
 ## Voices (no cloning of real people)
 
+The full guide, with the consent rule, voice design, training an open model and delivery: **[VOICES.md](VOICES.md)**.
+
 | Need | Use |
 |---|---|
 | A character voice that fits a vibe ("cheerful young Australian girl", "gruff friendly dad") | **Stock voices** in ElevenLabs' voice library, filtered by age, accent and style, or ElevenLabs **Voice Design** (describe the voice in words) |
 | Free and fully local | **Kokoro TTS** (Apache-2.0, 82M parameters, runs on a CPU) |
 | Your own family's voices | Clone **only with that person's consent**, e.g. a parent narrating; ElevenLabs Instant Voice Clone |
+| A designed voice that stays the same, or a trained model of a voice you have rights to | [VOICES.md](VOICES.md): Route A (design, then clone your own master take) or Route B (train GPT-SoVITS, Chatterbox and others locally) |
 | Lip-sync | Generate the audio first, then a lip-sync model or MiniMax H3 hosted ref-to-video with the audio (see [ROUTING.md](ROUTING.md)) |
 
 ## A good default for a kid's personal cartoon

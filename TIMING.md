@@ -12,7 +12,7 @@ smooth, and it reads as video, not animation. Hand-drawn animators never time a 
 | Fast action, snaps, impacts, smears, contacts | **ones** | a fast move on twos strobes and loses the contact |
 | Anticipation and settles | twos | |
 | Pose holds | **fours or more** (a true hold) | a held drawing reads as intent, not a freeze |
-| Mouths (dialogue) | twos | matches the character layer; ones looks rubbery |
+| Mouths (dialogue) | **ones** inside lip-synced takes; twos for hand-timed mouth shapes | a synced mouth stepped on twos lags the consonants; keep each synced take locked to its audio ([VOICES.md](VOICES.md#delivery-getting-voices-onto-the-picture)) |
 | Crowds and background cast | **threes** | keeps the eye on the hero layer |
 | Camera moves | **ones** | a stepped camera judders |
 | Backgrounds, effects, UI, subtitles, code graphics | **ones** | |

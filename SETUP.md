@@ -92,6 +92,8 @@ same source.
 | Lip-sync onto an existing clip | `fal-ai/sync-lipsync/v3`; `fal-ai/kling-video/lipsync/audio-to-video` | $8 per minute; about $0.014 a unit | untested in our bake-off |
 | Talking still (alternative) | `veed/fabric-1.0` | $0.08/s | untested in our bake-off |
 | TTS, expressive | `elevenlabs/tts/eleven-v4`; `fal-ai/elevenlabs/tts/eleven-v3` | $0.08 / $0.10 per 1,000 characters | stock or designed voices only, never a clone without consent |
+| Voice design from a description | `fal-ai/qwen-3-tts/voice-design/1.7b`; `fal-ai/minimax/voice-design` | | then lock it by cloning your own master take ([VOICES.md](VOICES.md)) |
+| Clone a voice you have rights to | `fal-ai/qwen-3-tts/clone-voice/1.7b` (or `/0.6b`); `fal-ai/minimax/voice-clone` | | consent first ([VOICES.md](VOICES.md#the-consent-rule-read-this-first)) |
 | TTS, cheap | `fal-ai/kokoro/american-english` | $0.02 per 1,000 characters | Kokoro also runs free on a CPU |
 | Matte a character or person in video | `fal-ai/sam2/video`; `fal-ai/sam-3/video` | about $0.0011 per compute second; $0.005 per 16 frames | for compositing a swapped character back over a clean plate |
 | Video upscale | `fal-ai/seedvr/upscale/video`; `topaz/upscale/video/precision` | $0.001 per megapixel; about $0.01 a unit | upscale the 480p take you liked rather than re-rolling at 720p |
@@ -178,6 +180,8 @@ GPU; a LoRA trained on non-commercial weights inherits their terms; keep the lic
 ship. Not legal advice.
 
 ### Where this fits
+
+- [VOICES.md](VOICES.md): voice design on fal, and training open voice models on a home GPU or an HF Job.
 
 - [PERSONAL-USE.md](PERSONAL-USE.md): the private, open-weight route (Kontext dev, Qwen-Image-Edit, Wan 2.x) runs on
   HF Jobs or Endpoints as above, or any GPU rental.

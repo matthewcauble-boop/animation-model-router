@@ -61,6 +61,7 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [PERSONAL-USE.md](PERSONAL-USE.md) | Private, non-commercial route: animate from **any** reference image (permissive hosted plus open-weight models), voices without cloning real people |
 | [LESSONS.md](LESSONS.md) | Production lessons: on screen matches what's said, poses match, proportion stretch in swaps, living holds, stretches hold, breath pacer, a fast judge model, paid-API locks and budgets |
 | [SETUP.md](SETUP.md) | fal and Hugging Face routes: keys, the queue API, model ids per job with list prices, Spaces, Inference Providers, Endpoints and Jobs, licences for self-hosting, which route when |
+| [VOICES.md](VOICES.md) | Character voices with consent: design a voice from a description, train an open model (GPT-SoVITS, F5-TTS, Chatterbox, XTTS-v2, StyleTTS2, Kokoro, Qwen3-TTS) with licences, recording and cleaning, evaluation, delivery and lip-sync rules |
 
 ## The tools
 
