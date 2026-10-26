@@ -128,5 +128,9 @@ Before any video spend:
 
 ## 7. Then animate
 
+First put the approved stills on an annotated storyboard sheet (motion arrows, camera end frames, eyelines, timing
+on beats) and run the rule-of-thirds check: [STORYBOARD.md](STORYBOARD.md), `tools/storyboard/`. Get a yes on the
+sheet before any video spend.
+
 Animate each approved start frame with the motion model the moment calls for ([ROUTING.md](ROUTING.md)), then run
 the cut gate, the timing pass and the cut gate again ([QA.md](QA.md), [TIMING.md](TIMING.md)).

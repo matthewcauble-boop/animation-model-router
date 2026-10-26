@@ -14,6 +14,10 @@ column links it.
 | 6 | [Breath pacer overlay](#6-breath-pacer-overlay) | A circle on 5.5 s in / 5.5 s out that never stops moving and never covers a character | `tools/breathpacer/` |
 | 7 | [A fast judge model for QA](#7-a-fast-judge-model-for-qa) | Atomic yes/no questions per frame, maths in code, fitted to your own approve/reject notes | `tools/judge/`, [QA.md](QA.md#a-fast-judge-model) |
 | 8 | [Paid APIs lock; budgets](#8-paid-apis-lock-when-the-balance-runs-out) | Stop and report on a 403; cap spend per day; log every paid call | `tools/fal_run.py`, [SETUP.md](SETUP.md) |
+| 9 | [Storyboard the motion before animating](#9-storyboard-the-motion-before-animating) | An annotated sheet (arrows, end frames, eyelines, beats) and a thirds check, approved before any video spend | `tools/storyboard/`, [STORYBOARD.md](STORYBOARD.md) |
+| 10 | [Composition: rule of thirds](#10-composition-rule-of-thirds) | Horizon on a third, eyes on an intersection, lead room, no dead foreground | `tools/storyboard/thirds.py` |
+| 11 | [Screen direction and the 180-degree line](#11-screen-direction-and-the-180-degree-line) | Keep the journey's direction; mirror a plate, never flip a character | [STORYBOARD.md](STORYBOARD.md#direction-and-continuity) |
+| 12 | [Cuts, camera moves and rhythm](#12-cuts-camera-moves-and-rhythm) | Cut on action, match on action, motivated moves ending on a planned end frame, cuts on beats | [STORYBOARD.md](STORYBOARD.md#cuts) |
 
 ---
 
@@ -207,3 +211,43 @@ target and a poor first pass.
 - **Budget caps per day,** checked before each submit (`tools/fal_run.py --daily-cap`, `bake.py --hard-cap`).
 - **Log every paid call** to one CSV ledger: date, tool, provider, model, units, USD, note. The tools here append to
   `spend-ledger.csv` (or `$AMR_LEDGER`).
+
+## 9. Storyboard the motion before animating
+
+- A sheet of approved stills with **motion arrows, camera moves with their end frames, eyelines, and timing on
+  beats** answers the questions a video model would otherwise answer at random: which way things move, where the
+  camera stops, who looks at what, how each shot hands over to the next.
+- **Get a yes on the sheet before any video spend.** Moving an arrow is free; re-rendering a shot is not.
+- **Explore cheap, finish expensive:** rough the frames and blocking on a cheap image model, then render the approved
+  keyframes on the expensive one with the same composition.
+- Write an **edit-plan table** (shot, motion in, motion out, cut type, camera move, duration) and check the cut
+  against it.
+
+**Tool:** `tools/storyboard/sheet.py` (the sheet), `tools/storyboard/thirds.py` (the composition check). Guide:
+[STORYBOARD.md](STORYBOARD.md).
+
+## 10. Composition: rule of thirds
+
+- Horizon or ground line on a third, never across the middle.
+- The main subject's eyes on a third intersection; lead room in the direction it looks or moves.
+- No big band of empty ground at the bottom of the frame.
+- A push-in may start wide and off the thirds, as long as its **end frame** lands the subject on an intersection.
+- A vision model can place the horizon and face; the flags are code (thresholds you can change), and a free manual
+  mode takes the numbers by eye.
+
+## 11. Screen direction and the 180-degree line
+
+- The journey has a direction (rain, a fall, a walk out and back); keep it across every cut.
+- When a new set would flip the direction (outside to inside), **mirror the plate**, not the character: a flipped
+  character swaps sides of its own design.
+- An eyeline in one shot points where the looked-at subject sits in the next.
+
+## 12. Cuts, camera moves and rhythm
+
+- **Cut on action** and **match on action:** out of the bottom at the right third, in at the top at the right third,
+  same speed.
+- **Transitions that tell the story:** a flash that is the cut, cold-to-warm at a door, a match cut from a fire's glow
+  to a lit window seen from outside.
+- **Motivated camera moves** (push in = this matters, tilt up = where is it coming from?) that end on a planned end
+  frame the next shot picks up from. Lock the camera when the action carries the shot.
+- **Rhythm:** cut on beats; hold 5-6 beats for mood, 2-3 for action, about 4 for acting.

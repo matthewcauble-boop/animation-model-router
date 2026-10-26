@@ -57,11 +57,12 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 |---|---|
 | [ROUTING.md](ROUTING.md) | A model per moment: winner, runner-up, settings, prompt, refs, cost, failure modes |
 | [KEYFRAMES.md](KEYFRAMES.md) | Master-plate method, character sheets, the edit prompt, "prompt nouns trigger anatomy", the keyframe gate |
+| [STORYBOARD.md](STORYBOARD.md) | Annotated storyboard sheets (motion arrows, camera end frames, eyelines, IN/CAM/action per shot, timing on beats), the rule-of-thirds check, cinematography principles, the edit-plan table |
 | [TIMING.md](TIMING.md) | Ones, twos and threes per action and layer, applied in the edit |
 | [QA.md](QA.md) | Continuity checker, frameqa, blind critics, the gate rules, delivery rules |
 | [BAKEOFF.md](BAKEOFF.md) | Run your own fair bake-off: principles, moments, critic prompt, log templates |
 | [PERSONAL-USE.md](PERSONAL-USE.md) | Private, non-commercial route: animate from **any** reference image (permissive hosted plus open-weight models), voices without cloning real people |
-| [LESSONS.md](LESSONS.md) | Production lessons: on screen matches what's said, poses match, proportion stretch in swaps, living holds, stretches hold, breath pacer, a fast judge model, paid-API locks and budgets |
+| [LESSONS.md](LESSONS.md) | Production lessons: on screen matches what's said, poses match, proportion stretch in swaps, living holds, stretches hold, breath pacer, a fast judge model, paid-API locks and budgets, storyboard and cinematography rules |
 | [SETUP.md](SETUP.md) | fal and Hugging Face routes: keys, the queue API, model ids per job with list prices, Spaces, Inference Providers, Endpoints and Jobs, licences for self-hosting, which route when |
 | [VOICES.md](VOICES.md) | Character voices with consent: design a voice from a description, train an open model (GPT-SoVITS, F5-TTS, Chatterbox, XTTS-v2, StyleTTS2, Kokoro, Qwen3-TTS) with licences, recording and cleaning, evaluation, delivery and lip-sync rules |
 
@@ -73,6 +74,8 @@ All Python 3.10+, ffmpeg/ffprobe on PATH. `pip install -r requirements.txt`.
 |---|---|---|
 | `tools/continuity/continuity.py` | Story continuity across frames and shots against a per-scene bible; `--stills` is the keyframe gate | a screen model key (`TYPESAFE_API_KEY`, or `--screen fal/gemini/ollama`); `FAL_KEY` or local Ollama to confirm |
 | `tools/frameqa/frameqa.py` | Broken-frame QA: cuts, black, frozen, flicker, loudness, safe-area text (OCR), glitches | same keys, or `--backend none` for code checks only |
+| `tools/storyboard/sheet.py` | Annotated storyboard sheet from a `storyboard.json`: numbered frames, motion / camera / eyeline / weather / exit arrows, end-frame boxes, timing in beats, IN/CAM/action captions; `--thirds` adds the overlay sheet | nothing (local) |
+| `tools/storyboard/thirds.py` | Rule-of-thirds check: horizon, face, dead foreground flags + grid overlays | nothing (`--backend manual`); `FAL_KEY` or an OpenAI-compatible key for the vision backends |
 | `tools/timing/onestwos.py` | Re-time smooth AI video onto ones/twos/threes per segment, audio untouched | nothing (local) |
 | `tools/bakeoff/bake.py` | Resumable, cost-capped fal bake-off runner with a ledger | `FAL_KEY` |
 | `tools/bakeoff/sheet.py` | Contact sheets, keyframe strips, dense lip-sync sheets | nothing |
@@ -93,6 +96,10 @@ python tools/continuity/continuity.py --stills --bible scene/continuity.json --d
 # the cut gates
 python tools/continuity/continuity.py cut.mp4 --bible scene/continuity.json
 python tools/frameqa/frameqa.py cut.mp4 --format 9x16 --holds holds.json --refs sheets/a.png sheets/b.png
+
+# storyboard sheet + thirds check, before animating
+python tools/storyboard/sheet.py tools/storyboard/example/storyboard.json --thirds
+python tools/storyboard/thirds.py qa/thirds --storyboard storyboard.json --backend manual
 
 # timing in the edit
 python tools/timing/onestwos.py cut.mp4 --spec timing.json -o cut-timed.mp4

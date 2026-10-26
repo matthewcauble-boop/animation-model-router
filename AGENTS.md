@@ -25,7 +25,10 @@ turned into a cartoon, or a character their kid loves. The episodes are for **pr
    their OK. Every later frame copies this sheet. See [KEYFRAMES.md](KEYFRAMES.md).
 4. **Write a tiny script with them:** 3-8 shots, one action per shot, and the lines each character says.
 5. **Make every shot as a still** from one master scene plus the sheet. Show the stills, fix anything off-model,
-   then animate. See [ROUTING.md](ROUTING.md) for which model to use per moment. Start with
+   then make a storyboard sheet from them (`tools/storyboard/sheet.py`: arrows for motion, camera moves with their
+   end frames, eyelines, timing) and run the thirds check (`tools/storyboard/thirds.py --backend manual` is free).
+   Show the sheet and get a yes before animating; see [STORYBOARD.md](STORYBOARD.md). Then animate: see
+   [ROUTING.md](ROUTING.md) for which model to use per moment. Start with
    `python tools/fal_run.py --dry-run` to show costs before spending.
 6. **Voices:** a stock or designed voice, or the parent's own voice trained per [VOICES.md](VOICES.md). Record the
    audio first, then lip-sync to it.

@@ -8,6 +8,9 @@ tools/
   continuity/examples/        continuity.example.json (a three-character bible)
   frameqa/frameqa.py          broken-frame QA
   frameqa/questions.default.json, examples/questions.character-swap.json, examples/holds.example.json
+  storyboard/sheet.py         annotated storyboard sheet (arrows, end frames, timing, IN/CAM/action); --thirds overlay sheet
+  storyboard/thirds.py        rule-of-thirds check (fal / OpenAI-compatible / manual) + grid overlays
+  storyboard/example/         storyboard.json, placeholder frames (make_frames.py) and the rendered sheets
   timing/onestwos.py          ones / twos / threes re-timing in the edit
   timing/examples/timing.example.json
   bakeoff/bake.py             resumable fal bake-off runner + ledger
@@ -46,7 +49,9 @@ for frameqa's safe-area OCR). ffmpeg and ffprobe must be on PATH.
 | `JUDGE_JEV_MODEL`, `JUDGE_CONTEXT` | judge | default `jev-latest` (Box needs jev-1.14+); one sentence of context sent with every frame |
 | `JUDGE_OPENAI_BASE`, `JUDGE_OPENAI_KEY` | judge `--backend openai` | any OpenAI-compatible vision endpoint |
 | `VOSYNC_OPENAI_BASE`, `VOSYNC_OPENAI_KEY` | vosync `--backend openai` | |
-| `AMR_LEDGER` | judge, fal_run | spend ledger CSV (default `spend-ledger.csv` in the working directory) |
+| `THIRDS_OPENAI_BASE`, `THIRDS_OPENAI_KEY` | storyboard/thirds.py `--backend openai` | |
+| `STORYBOARD_FONT`, `STORYBOARD_FONT_BOLD` | storyboard | font files; else the first system font found |
+| `AMR_LEDGER` | judge, fal_run, thirds | spend ledger CSV (default `spend-ledger.csv` in the working directory) |
 | `AMR_DAILY_CAP` | fal_run | default daily cap in USD (5.00) |
 | `PACER_FONT_TITLE`, `PACER_FONT_LIGHT`, `PACER_FONT_NUM` | hero.py | font files; else the first system font found |
 
@@ -76,6 +81,20 @@ python tools/frameqa/frameqa.py VIDEO --format 9x16|16x9|1x1|4x5 [--refs a.png b
 - Output: `frameqa-<stem>/` with `report.md`, `report.json`, `flagged.jpg`, `thumbs/`, `frames/`.
 - `--backend none` runs only the free code checks (cuts, black/flat, frozen, flicker, audio, OCR safe area).
 - `--holds` marks intended freezes and silences: `[[34, 36], {"start": 78, "end": 81.7}]`.
+
+## storyboard/
+
+```
+python tools/storyboard/sheet.py storyboard.json [-o sheet.jpg] [--thirds [--thirds-json thirds.json]] [--panel-width 360]
+python tools/storyboard/thirds.py OUTDIR [frames...] [--storyboard storyboard.json] [--backend manual|fal|openai]
+       [--model ID] [--manual comp.json] [--mid 0.42,0.58] [--line-tol 0.10] [--int-tol 0.15] [--dead-max 0.25] [--max-cost 0.50]
+```
+
+- `sheet.py` output: `<stem>-sheet.jpg` (and `<stem>-thirds.jpg`) beside the JSON. Format and arrow kinds:
+  [../STORYBOARD.md](../STORYBOARD.md).
+- `thirds.py` output: `OUTDIR/<id>-grid.jpg` + `OUTDIR/thirds.json`. `--backend manual` reads each shot's
+  `composition` block (no API); `fal` uses `FAL_KEY`; `openai` uses `THIRDS_OPENAI_BASE` + `THIRDS_OPENAI_KEY`.
+- Fonts: `STORYBOARD_FONT`, `STORYBOARD_FONT_BOLD` (a `.ttf` path), else the first system font found.
 
 ## onestwos.py
 
