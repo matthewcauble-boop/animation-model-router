@@ -74,8 +74,8 @@ first pass for a few cents.
 - Back-turns are confirmed with the positive question "can you see their face?". "Is he turned away?" gets a false "no"
   from both screen and confirmer models.
 - Small characters in wide shots are misjudged at full frame; the confirmer gets a crop around the tracked character.
-- Colour tracking is only trusted for position and screen direction: a night-sky window matched a blue character and
-  dim light lost an orange one. A `shape: round` filter helps.
+- Colour tracking is only trusted for position and screen direction: a night-sky window matched a dark-coloured character and
+  dim light lost a bright-coloured one. A `shape: round` filter helps.
 
 **Measured:** a 39 s cut, 194 samples, 16 s, $0.022. On its first real cut it caught every problem the director had
 reported by eye (a sidekick missing for two whole shots while his spot was in frame, a back-turn, a character leaving
