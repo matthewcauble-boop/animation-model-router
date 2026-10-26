@@ -30,6 +30,8 @@ Models change fast. The method lasts longer than the winners, so the repo includ
 
 | Moment | Use | Instead of |
 |---|---|---|
+| Exploring stills (looks, blocking, storyboard drafts, re-rolls) | **GPT Image 2 low** (~$0.036 at 720x1280, 3 refs); GPT Image 2.5 medium (~$0.040) for picked drafts; 2.5 high (~$0.06-0.07) only for frames that get animated | exploring at high quality; FLUX.2, Seedream 5 Lite/Flash, Nano Banana 2 for characters |
+| A hosted model refuses your reference | the same tier on Qwen-Image edit, Seedream edit or FLUX Kontext; then open weights on your own GPU, private use only ([PERSONAL-USE.md](PERSONAL-USE.md)) | quietly accepting a generic substitute character |
 | Scene keyframes | **GPT Image 2.5 high** + 5 refs (master, empty plate, 2 sheets, pose card) | Nano Banana Pro; "harmonize" passes |
 | Same-camera coverage stills | Nano Banana 2.1 (most stable set; fakes new angles) | |
 | New on-model pose still | **GPT Image 2 high** | |

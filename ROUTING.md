@@ -24,6 +24,8 @@ Prices are list prices seen in 2026-10; check the provider before you spend.
 
 | Moment | Winner (mean /10, wins) | Runner-up | Avoid |
 |---|---|---|---|
+| Exploring looks, blocking, storyboard drafts, re-rolls (section 0) | **GPT Image 2 low** (about $0.036, on-model) | Qwen-Image 3 edit ($0.049); GPT Image 2.5 medium ($0.040) for the picked drafts | FLUX.2 dev / Klein, Seedream 5 Lite / Flash, Nano Banana 2 (off-model, wrong pose or no reframe) |
+| A hosted model refuses the reference (section 0) | the same tier on Qwen-Image edit, Seedream edit or FLUX Kontext pro/max | open weights (Qwen-Image-Edit, Kontext dev) on your own GPU, private use only | |
 | Scene keyframes (every shot of a scene as a still) | **GPT Image 2.5 high** (7.1 over 2 rounds) | GPT Image 2 high (6.8); Nano Banana 2.1 for same-camera shots only (6.25) | Nano Banana Pro (4.3), FLUX Kontext (3.5), "harmonize a paste-up" (1.7) |
 | New on-model pose still | **GPT Image 2 high** (8.0, 3/3) | Seedream 5 Pro / FLUX Kontext Max (5.3) | Nano Banana 2.1 (put two versions in one image) |
 | Package / label mockup with exact text | **Nano Banana Pro** (8.0) | Nano Banana 2.1 (7.8), Seedream 5 Pro (7.7), GPT Image 2 (7.5) | FLUX.2 Max (3.8), FLUX Kontext Max (3.3) |
@@ -39,6 +41,63 @@ Prices are list prices seen in 2026-10; check the provider before you spend.
 | Numbers, words, labels, diagrams, subtitles | **Code** (your motion-graphics engine) | | any video model |
 
 ---
+
+## 0. Image tiers: pay for quality only on frames that get animated
+
+A second, cheaper bake-off (2026-10-26) asked one question: what is the cheapest image model that stays on-model for
+exploring looks and drafting storyboards? Same two shots (the round mascot crouching at a pond with props; the
+mitten-handed character tucking small props in by a fire), the same prompt, the same 3 references (plate, character
+sheet, prop sheet), 720x1280 requested, every take checked by a fast judge plus an eye check. 22 images cost $1.06.
+
+| Tier | Use for | Model (fal) | Billed $/image, 720x1280, 3 refs |
+|---|---|---|---|
+| **EXPLORE** | looks, blocking, storyboard drafts, re-rolls, "what if" frames | **GPT Image 2 low**: `openai/gpt-image-2/edit`, `quality: "low"` | **about $0.036** |
+| Explore backup | the OpenAI model is down or refuses; a second opinion | Qwen-Image 3 edit: `alibaba/qwen-image-3/edit`, `enable_prompt_expansion: false`, at most 3 refs | about $0.049 |
+| **MID / DRAFT** | the picked board frames, re-rendered for review and the keyframe gate | **GPT Image 2.5 medium**: `openai/gpt-image-2.5/flare/edit`, `quality: "medium"`; same family as the finals, so the look carries over | **about $0.040** |
+| **FINAL** | only the keyframes that get animated | **GPT Image 2.5 high** (section 1) | **$0.06-0.07** at 720x1280; more at 2K (about $0.14) |
+
+At these prices a 10-frame storyboard costs about $0.36 to explore, about $0.40 for a draft pass and about $0.65 for
+finals.
+
+**Rules:**
+- **Never explore at high quality.** Re-rolls go through the EXPLORE tier; re-render at FINAL only after a human picks
+  the take.
+- **The reference images are billed too.** On GPT image models every reference is input tokens: about $0.03 for 3
+  refs, which is the floor whatever the quality setting. So low vs high saves only about $0.03; the bigger levers are
+  **at most 3 refs** (drop the style ref when the plate already carries the look) and **720x1280, not 2K**.
+- **Log the actual billed cost, never a hard-coded estimate.** fal returns `x-fal-billable-units` on the result; multiply
+  by the endpoint's `unit_price` from the pricing API. A hard-coded per-image estimate in our scripts over-reported
+  real spend by about 4x. `tools/fal_run.py` now logs a correction row with the billed amount ([SETUP.md](SETUP.md#reading-the-real-cost)).
+- **A fast judge can be too lenient on silhouette details.** The on-model pack passed a frame where the mascot's arms
+  were hidden and an extra prop had appeared. Eye-check every explore batch for arms, limb counts and prop counts, and
+  keep a body / chest check on every frame of a child-like character.
+
+**Ruled out for character stills (and why):**
+
+| Model (fal) | Billed $/image | Why not |
+|---|---|---|
+| FLUX.2 dev edit (`fal-ai/flux-2/edit`), FLUX.2 Klein 9B edit (`fal-ai/flux-2/klein/9b/edit`) | $0.044-0.048 | hid the mascot's arms, merged legs into the body, drew the wrong number of props, glossy candy look, no reframing |
+| Seedream 5 Lite edit (`bytedance/seedream/v5/lite/edit`) | $0.035 | pasted the character sheet's pose small and wide instead of the asked pose; ignored the output size (returned 1920x3416) |
+| Seedream 5 Flash edit (`bytedance/seedream/v5/flash/edit`) | $0.027 | drew an adult torso on a child-like character and split the mittens into fingers: always run the body / chest check |
+| Nano Banana 2 edit (`fal-ai/nano-banana-2/edit`) | $0.08 | wrong pose (stood instead of crouching) and no camera move; costs more than GPT low and does less |
+| Seedream 5 Pro edit (`bytedance/seedream/v5/pro/edit`) | about $0.077 | a good character, but it rearranged the room (fireplace and stove swapped sides); only for exteriors or single-character shots |
+
+### If a model refuses the reference
+
+Hosted models sometimes refuse a reference image on copyright or IP grounds, or quietly swap in a generic character.
+
+1. **The refusal is usually model-specific.** Retry the same tier on a hosted model that follows references with fewer
+   refusals (list prices per image at about 720x1280, checked on fal's model list 2026-10-26):
+   - Qwen-Image edit: `fal-ai/qwen-image-edit` or `fal-ai/qwen-image-edit-plus` ($0.03 per megapixel, about $0.03);
+     `alibaba/qwen-image-3/edit` (about $0.049);
+   - Seedream edit: `fal-ai/bytedance/seedream/v4/edit` ($0.03); `bytedance/seedream/v5/pro/edit` (about $0.07);
+   - FLUX Kontext: `fal-ai/flux-pro/kontext` ($0.04), `fal-ai/flux-pro/kontext/max` ($0.08); 4 references at most.
+2. **If hosted models keep refusing,** the open-weight route on a rented or local GPU has no built-in refusals:
+   Qwen-Image-Edit (Apache-2.0) or FLUX.1 Kontext [dev] (non-commercial licence), via ComfyUI or HF Jobs
+   ([SETUP.md](SETUP.md#self-hosting-open-weights-inference-endpoints-and-jobs)).
+3. **The same checks still apply:** on-model, body / chest, limb and prop counts, and the keyframe gate.
+4. **This route is for private, family use** ([PERSONAL-USE.md](PERSONAL-USE.md)): anything based on characters you
+   don't own stays private, never posted or sold.
 
 ## 1. Scene keyframes
 
@@ -285,6 +344,10 @@ estimated at about $0.05 (it depends on the plan).
 | Still | fal | Higgsfield |
 |---|---|---|
 | GPT Image 2.5 high 2k | about $0.14 | 2.75 credits |
+| GPT Image 2.5 high 720x1280 (billed, 3 refs) | $0.06-0.07 | |
+| GPT Image 2.5 medium 720x1280 (billed) | about $0.040 | |
+| GPT Image 2 low 720x1280 (billed) | about $0.036 | |
+| Qwen-Image 3 edit 720x1280 (billed) | about $0.049 | |
 | GPT Image 2 high | about $0.21 | 6.5 credits |
 | Nano Banana Pro 2K | $0.15 | 2 credits |
 | Nano Banana 2.1 2k | about $0.10 | 2 credits |

@@ -10,7 +10,9 @@
 
 --args     a JSON file or an inline JSON string. Any string "@name" is replaced by the fal CDN URL of --upload name=path.
 --est      your estimate of the call's cost in USD (from ROUTING.md or the model page). It is checked against
-           --daily-cap BEFORE submitting and written to the ledger after.
+           --daily-cap BEFORE submitting and written to the ledger at submit. When the call completes, the ACTUAL
+           billed cost (the result's `x-fal-billable-units` header x the endpoint's unit price from fal's pricing API)
+           is read and a correction row is logged, so the ledger holds the real bill, not the estimate.
 --dry-run  print what would be uploaded and sent, with the estimate; no upload, no call, no spend.
 
 Shape of the fal queue API (what this script does):
@@ -111,6 +113,21 @@ def spent_today(ledger: Path) -> float:
         return sum(float(r["usd"]) for r in csv.DictReader(f) if r.get("date") == today and r.get("usd"))
 
 
+def billed_usd(endpoint: str, response_url: str, key: str):
+    """Actual charge: x-fal-billable-units on the result x the endpoint's unit_price. None if either is unavailable."""
+    try:
+        r = urllib.request.Request(response_url, headers={"Authorization": f"Key {key}"})
+        with urllib.request.urlopen(r, timeout=60) as resp:
+            units = resp.headers.get("x-fal-billable-units")
+        if units is None:
+            return None
+        pr = req(f"https://api.fal.ai/v1/models/pricing?endpoint_id={endpoint}", key)
+        price = next((p["unit_price"] for p in pr.get("prices", []) if p.get("endpoint_id") == endpoint), None)
+        return None if price is None else float(units) * float(price)
+    except Exception:
+        return None
+
+
 def log(ledger: Path, endpoint, usd, note):
     new = not ledger.exists()
     with ledger.open("a", newline="", encoding="utf-8") as f:
@@ -165,6 +182,12 @@ def main():
             raise SystemExit(f"still {s} after {a.timeout:.0f} s; re-run later to keep polling {sub['request_id']}")
         time.sleep(a.poll)
     res = req(sub["response_url"], key)
+    billed = billed_usd(a.endpoint, sub["response_url"], key)
+    if billed is not None:
+        log(ledger, a.endpoint, billed - a.est, f"billed ${billed:.4f} (correction to estimate) {sub.get('request_id')}")
+        print(f"billed ${billed:.4f} (estimate was ${a.est:.2f})")
+    else:
+        print("billed cost unavailable (no x-fal-billable-units header); the ledger keeps the estimate")
     (out / (a.endpoint.replace("/", "_") + ".result.json")).write_text(json.dumps(res, indent=1), encoding="utf-8")
     for i, u in enumerate(media_urls(res)):
         dst = out / f"{sub['request_id']}_{i}{Path(u.split('?')[0]).suffix}"

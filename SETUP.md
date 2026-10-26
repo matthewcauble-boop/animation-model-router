@@ -74,11 +74,15 @@ same source.
 
 | Job | Model id | Cost (list, 2026-10) | Notes |
 |---|---|---|---|
-| Keyframe edit (new framing or angle) | `openai/gpt-image-2.5/flare/edit` | about $0.14 a frame at high quality | the keyframe winner ([KEYFRAMES.md](KEYFRAMES.md)) |
+| Exploring stills (cheap tier) | `openai/gpt-image-2/edit`, `quality: "low"` | about $0.036 billed at 720x1280 with 3 refs | looks, blocking, storyboard drafts, re-rolls ([ROUTING.md](ROUTING.md#0-image-tiers-pay-for-quality-only-on-frames-that-get-animated)) |
+| Exploring stills, backup | `alibaba/qwen-image-3/edit` | about $0.049 billed | `enable_prompt_expansion: false`; at most 3 refs |
+| Draft stills (mid tier) | `openai/gpt-image-2.5/flare/edit`, `quality: "medium"` | about $0.040 billed | same family as the finals |
+| Keyframe edit (new framing or angle) | `openai/gpt-image-2.5/flare/edit` | about $0.14 a frame at high quality at 2K; $0.06-0.07 billed at 720x1280 | the keyframe winner ([KEYFRAMES.md](KEYFRAMES.md)) |
 | Keyframe edit (runner-up, pose stills) | `openai/gpt-image-2/edit` | about $0.21 | |
 | Same-camera coverage stills | `fal-ai/nano-banana-2.1/edit` | about $0.10 | most stable set; fakes new angles |
 | Packaging with exact text | `fal-ai/nano-banana-pro/edit` | $0.15 at 2K | list every word verbatim |
-| Reference edit that refuses less | `fal-ai/flux-pro/kontext` (`/max` for the bigger model) | $0.04 a image | 4 references at most |
+| Reference edit that refuses less | `fal-ai/flux-pro/kontext` (`/max` for the bigger model) | $0.04 an image ($0.08 max) | 4 references at most |
+| Reference edit that refuses less (alternative) | `fal-ai/bytedance/seedream/v4/edit` | $0.03 an image | if a model refuses the reference ([ROUTING.md](ROUTING.md#if-a-model-refuses-the-reference)) |
 | Cheap open-weight edit, hosted | `fal-ai/qwen-image-edit` | $0.03 per megapixel | |
 | Image-to-video, prop-light acting | `fal-ai/minimax/hailuo-2.3/standard/image-to-video` (`/pro/` for 1080p) | $0.28 / $0.49 per 6 s | first frame only |
 | Image-to-video, held gesture (first + last frame) | `fal-ai/minimax/hailuo-02/pro/image-to-video` | | end frame = start frame |
@@ -98,6 +102,20 @@ same source.
 | Matte a character or person in video | `fal-ai/sam2/video`; `fal-ai/sam-3/video` | about $0.0011 per compute second; $0.005 per 16 frames | for compositing a swapped character back over a clean plate |
 | Video upscale | `fal-ai/seedvr/upscale/video`; `topaz/upscale/video/precision` | $0.001 per megapixel; about $0.01 a unit | upscale the 480p take you liked rather than re-rolling at 720p |
 | Vision yes/no (QA confirmer, vosync, judge escalation) | `openrouter/router/vision` with `model: "google/gemini-3.5-flash-lite"` | about $0.001 a call | some router models need `reasoning: true` |
+
+### Reading the real cost
+
+Log what fal actually billed, never a hard-coded per-image estimate (ours over-reported spend by about 4x). After a
+queue job completes, the result carries an `x-fal-billable-units` header; multiply it by the endpoint's `unit_price`:
+
+```bash
+curl -s -D - -o /dev/null -H "Authorization: Key $FAL_KEY" "https://queue.fal.run/<endpoint>/requests/<request_id>" | grep -i billable
+curl -s -H "Authorization: Key $FAL_KEY" "https://api.fal.ai/v1/models/pricing?endpoint_id=<endpoint>"
+```
+
+`tools/fal_run.py` does this after each call and logs a correction row, so the ledger holds the bill. **Cost levers for
+image edits:** every reference image is billed as input (about $0.03 for 3 on GPT image models), so use at most 3 refs
+and render at 720x1280 rather than 2K; the quality setting matters less than refs and size.
 
 To check an id or find new ones (free, no key needed for the list):
 
