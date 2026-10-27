@@ -59,6 +59,7 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | File | What |
 |---|---|
 | [ROUTING.md](ROUTING.md) | A model per moment: winner, runner-up, settings, prompt, refs, cost, failure modes |
+| [CONSISTENCY.md](CONSISTENCY.md) | Keeping characters, faces, proportions, sets, props, light, style and voices the same across a 5-10 minute episode and a series: the consistency stack, a series-bible folder layout, LoRA vs reference editing vs identity models (measured), new angles, what checks can't do, a checklist |
 | [KEYFRAMES.md](KEYFRAMES.md) | Master-plate method, character sheets, the edit prompt, "prompt nouns trigger anatomy", the keyframe gate |
 | [STORYBOARD.md](STORYBOARD.md) | Annotated storyboard sheets (motion arrows, camera end frames, eyelines, IN/CAM/action per shot, timing on beats), the rule-of-thirds check, cinematography principles, the edit-plan table |
 | [TIMING.md](TIMING.md) | Ones, twos and threes per action and layer, applied in the edit |
