@@ -18,8 +18,9 @@ Models change fast. The method lasts longer than the winners, so the repo includ
    re-roll costs $0.30-2.80.
 2. **Then the right motion model per moment.** No model wins everything. The house default lost badly on props, real
    plates and glove-plus-food, and won on prop-light acting. Route by moment.
-3. **Then code for diagrams and text.** Never ask a video model to draw a number, a word, a label or a chart. A code
-   layer is exact, free, re-timeable and never drifts. Timing (ones, twos and threes) is applied in the edit too.
+3. **Then code for diagrams, text and the edit.** Never ask a video model to draw a number, a word, a label or a chart.
+   A code layer is exact, free, re-timeable and never drifts. Timing (ones, twos and threes), reps, holds, camera
+   moves, sound effects and the mix are done locally too: only the motion is paid ([EDIT.md](EDIT.md)).
 4. **Then QA gates.** Cheap per-frame screens (a continuity checker, a "broken frame" checker, a voice-over sync
    check and a fast judge tuned to your own calls) gate every cut; any confirmed P0 fails it. The expensive reviewer
    opens only flagged frames, and blind fresh-context critics rank takes. A human picks.
@@ -68,6 +69,10 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [SETUP.md](SETUP.md) | fal and Hugging Face routes: keys, the queue API, model ids per job with list prices, Spaces, Inference Providers, Endpoints and Jobs, licences for self-hosting, which route when |
 | [VOICES.md](VOICES.md) | Character voices with consent: design a voice from a description, train an open model (GPT-SoVITS, F5-TTS, Chatterbox, XTTS-v2, StyleTTS2, Kokoro, Qwen3-TTS) with licences, recording and cleaning, evaluation, delivery and lip-sync rules |
 | [EXPLAINER-CRITIC.md](EXPLAINER-CRITIC.md) | Measure an explainer channel you admire into a bible (pacing, hook, turns, comparisons, picture changes), score scripts and cuts against it with a copy guard, a blind critic agent, and the write-score-rewrite loop |
+| [EDIT.md](EDIT.md) | The local edit: only the motion is paid. Layer stack, reps from one clip, start/end angle clips, code tricks, ffmpeg assembly, mix, delivery, a real cost table |
+| [VOICEOVER.md](VOICEOVER.md) | One locked voice per character, line-by-line cached TTS, trim never speed, lines on their picture, when lip-sync is worth paying for |
+| [REVIEW.md](REVIEW.md) | Blind story-director and lesson-coach agents, the judge-and-fix loop for stills, what judges can't do |
+| [agents/](agents) | The two review agents as Claude Code agent files |
 
 ## The tools
 
@@ -91,6 +96,10 @@ All Python 3.10+, ffmpeg/ffprobe on PATH. `pip install -r requirements.txt`.
 | `agents/explainer-critic.md` | Blind critic agent: runs the scorer, returns a verdict, timestamped issues and up to 3 rewrites | an agent runtime (Claude Code style) |
 | `tools/fal_run.py` | One fal queue call: upload, submit, poll, download; daily cap, ledger, stops on a lock; `--dry-run` | `FAL_KEY` |
 | `tools/hf_run.py` | Call a Hugging Face Space (Gradio); `--view` its API; `--dry-run` | `HF_TOKEN`, `gradio_client` |
+| `tools/edit/mix.py` | Voice + music bed (set N dB under the voice) + SFX -> two-pass loudnorm, 48 kHz AAC muxed onto the video | nothing (local) |
+| `tools/edit/glow.py` | Pulsing coloured glow (or X-ray ghost) on a masked region: mask PNG, matte folder or colour key | nothing (local) |
+| `tools/edit/reps.py` | N reps from one top-to-bottom clip: forward, hold, reversed, hold; defect frames skipped; rep times out | nothing (local) |
+| `tools/voice/lines.py` | Voice a `lines.json` with a locked `voice.json` on fal; cached by text, `--dry-run`, trims silence, word timings | `FAL_KEY` (not for `--dry-run`) |
 | `tools/common/vision.py` | Shared yes/no vision backends (TypeSafe Jev, Gemini, fal OpenRouter, Ollama) | the backend's key |
 | `tools/common/launch_detached.ps1` | Start a long job detached with no console window (Windows) | |
 
@@ -109,6 +118,12 @@ python tools/storyboard/thirds.py qa/thirds --storyboard storyboard.json --backe
 
 # timing in the edit
 python tools/timing/onestwos.py cut.mp4 --spec timing.json -o cut-timed.mp4
+
+# voice, edit, mix
+python tools/voice/lines.py lines.json --voice voice.json -o vo/ --dry-run
+python tools/edit/reps.py down.mp4 -o reps.mp4 --reps 3 --down 0.65 --up 0.6 --report reps.json
+python tools/edit/glow.py reps.mp4 -o reps-glow.mp4 --mask-dir mattes/ --color "#3cff5a" --start 1.2
+python tools/edit/mix.py --video cut.mp4 --voice placed.json --music bed.wav --sfx sfx.wav -o master.mp4
 
 # a bake-off
 python tools/bakeoff/bake.py bakeoff/jobs.json --dry-run

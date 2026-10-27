@@ -26,3 +26,5 @@ corpus/
 *.vtt
 tools/explainer-critic/**/analysis/
 explainer-critic-*/
+.cache/
+vo/

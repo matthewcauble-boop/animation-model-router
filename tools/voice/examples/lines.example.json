@@ -1,0 +1,15 @@
+{
+ "_note": "One row per spoken line. id = the wav name. shot = where it plays. cue = what must be on screen as the line starts (the reviewer and vosync use it). Write lines the way the character talks; keep each to one idea.",
+ "lines": [
+  {"id": "H0", "character": "host", "shot": "S1", "text": "Most people squat like this. Here are three fixes.",
+   "cue": "the wrong squat, knees caving in, already on screen"},
+  {"id": "F1", "character": "host", "shot": "S2", "text": "One: push your knees out, right over your toes.",
+   "cue": "knees glow red on 'One', the fix and a green check land on 'out'"},
+  {"id": "F2", "character": "host", "shot": "S3", "text": "Two: feet a bit wider than your hips, toes out a little.",
+   "cue": "boots glow on 'feet', toe arrows on 'toes'"},
+  {"id": "F3", "character": "host", "shot": "S4", "text": "Three: don't fold forward. Chest up!",
+   "cue": "side view; the ghost tips forward on 'don't', upright on 'Chest up'"},
+  {"id": "E0", "character": "host", "shot": "S6", "text": "Save this for your next workout.",
+   "cue": "end card with the three fixes listed"}
+ ]
+}

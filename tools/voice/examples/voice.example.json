@@ -1,0 +1,27 @@
+{
+ "_note": "One locked voice per character. Pick it once (blind A/B a few voices on the same 2 lines), then never change these values mid-series: a new seed or stability is a new voice. params is sent verbatim with the text. Check the endpoint's model page for its exact field names and price.",
+ "characters": {
+  "host": {
+   "endpoint": "elevenlabs/tts/eleven-v4",
+   "params": {
+    "voice": "<voice name or id from the provider's library>",
+    "stability": 0.5,
+    "similarity_boost": 0.75,
+    "seed": 7,
+    "output_format": "mp3_44100_128",
+    "timestamps": true
+   },
+   "prefix": "[warm, relaxed]",
+   "text_field": "text",
+   "usd_per_1k_chars": 0.08,
+   "wording_style": "short plain sentences, one cue per line, says 'you', never shouts"
+  },
+  "sidekick": {
+   "endpoint": "elevenlabs/tts/eleven-v4",
+   "params": {"voice": "<another voice>", "stability": 0.45, "similarity_boost": 0.8, "seed": 11,
+              "output_format": "mp3_44100_128", "timestamps": true},
+   "prefix": "[excited]",
+   "usd_per_1k_chars": 0.08
+  }
+ }
+}

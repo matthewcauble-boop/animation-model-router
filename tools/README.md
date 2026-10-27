@@ -32,6 +32,11 @@ tools/
   explainer-critic/example/   bible.example.json, sample_script.txt, sample_script.weak.txt
   fal_run.py                  one fal queue call with a daily cap, a ledger and a dry run
   hf_run.py                   call a Hugging Face Space
+  edit/mix.py                 voice + music + SFX -> two-pass loudnorm, 48 kHz AAC, muxed onto the video
+  edit/glow.py                pulsing glow / X-ray ghost on a masked region (mask PNG, matte folder, colour key)
+  edit/reps.py                N reps from one top-to-bottom clip (forward, hold, reversed, hold)
+  voice/lines.py              line-by-line TTS on fal with a locked voice; cached by text; trims silence
+  voice/examples/             lines.example.json, voice.example.json, timeline.example.json
 ```
 
 Install: `pip install -r requirements.txt` (numpy, Pillow, opencv-python-headless; `rapidocr` + `onnxruntime` optional
@@ -42,11 +47,11 @@ for frameqa's safe-area OCR). ffmpeg and ffprobe must be on PATH.
 | Variable | Used by | Notes |
 |---|---|---|
 | `TYPESAFE_API_KEY` | screen backend `jev` (default) | TypeSafe System One; images are a preview feature (the client sends the opt-in header) |
-| `FAL_KEY` | confirmer (fal OpenRouter vision), `--backend fal`, `bake.py` | |
+| `FAL_KEY` | confirmer (fal OpenRouter vision), `--backend fal`, `bake.py`, `voice/lines.py` | |
 | `GEMINI_API_KEY` | `--backend gemini` / `--screen gemini` | |
 | `OLLAMA_HOST` | Ollama backends | default `http://127.0.0.1:11434`; free, slow |
 | `AMR_ENV_FILE` | all | a `.env`-style file to read keys from (default `.env` in the working directory) |
-| `AMR_CACHE_DIR` | continuity, frameqa | answer cache folder (default `cache/` beside each tool, git-ignored) |
+| `AMR_CACHE_DIR` | continuity, frameqa, voice/lines.py | answer cache folder (default `cache/` beside each tool, git-ignored) |
 | `CONTINUITY_SCREEN`, `CONTINUITY_FAL_MODEL`, `CONTINUITY_OLLAMA_MODEL` | continuity | defaults for `--screen`, `--fal-model`, `--ollama-model` |
 | `FRAMEQA_JEV_MODEL`, `FRAMEQA_MAX_SIDE`, `FRAMEQA_BATCH` | vision backends | |
 | `HF_TOKEN` | `hf_run.py` | read token; PRO for more ZeroGPU time |
@@ -108,6 +113,49 @@ python tools/timing/onestwos.py IN.mp4 --spec timing.json -o OUT.mp4 [--pick sha
 ```
 
 Same frame count, same fps, audio stream copied untouched. Spec and camera modes: [../TIMING.md](../TIMING.md).
+
+## edit/mix.py
+
+```
+python tools/edit/mix.py --voice voice.wav|placed.json [--music bed.wav] [--sfx sfx.wav] [--video picture.mp4]
+       -o out.mp4|out.wav [--under 19] [--music-start S] [--fade-out 0.9] [--duck START,END,DB ...]
+       [--lufs -16] [--tp -1.5] [--length S] [--report mix.json]
+```
+
+- The bed's gain comes from measured loudness: music lands `--under` dB below the voice's integrated LUFS.
+- `placed.json` = `[{"wav": "vo/H0.wav", "at": 0.05}, ...]`; each line gets 8 ms / 30 ms fades.
+- Two-pass `loudnorm` (`linear=true`), re-measured; prints voice/music LUFS, music gain, final LUFS and true peak.
+- `.mp4` output copies the video stream and writes AAC 192k, 48 kHz stereo, `+faststart`. Numbers: [../EDIT.md](../EDIT.md#8-the-audio-mix).
+
+## edit/glow.py
+
+```
+python tools/edit/glow.py IN -o OUT (--mask m.png | --mask-dir mattes/ | --key "#hex" [--tol 40]) [--color "#ff3c3c"]
+       [--start S] [--end S] [--fade 0.2] [--pulse 1.6] [--strength 1] [--inside 0.38] [--ghost] [--fps 24]
+```
+
+IN = a video, a frame folder or an image; OUT = `.mp4` (audio copied) or a folder of PNGs. Drawn on ones.
+
+## edit/reps.py
+
+```
+python tools/edit/reps.py down.mp4 -o reps.mp4 [--reps 3] [--first F] [--last F] [--skip A-B ...] [--down S] [--up S]
+       [--bottom-hold 0.25] [--top-hold 0.2] [--alive 2] [--twos] [--lead S] [--report reps.json]
+```
+
+Frames are re-timed by index, never interpolated. `--alive` holds drift between neighbouring drawings instead of
+freezing. `reps.json` has each rep's down / bottom / up / top time. Silent output.
+
+## voice/lines.py
+
+```
+python tools/voice/lines.py lines.json --voice voice.json -o vo/ [--dry-run] [--only IDS] [--refresh IDS]
+       [--pad 0.04] [--tail 0.12] [--floor -45] [--max-cost 1.0]
+```
+
+- `lines.py`: cache key = endpoint + params + text, so only changed lines cost money; `--dry-run` sends nothing and
+  needs no key. Writes `vo/<id>.wav` (48 kHz), `vo/timings.json`, `vo/spend.csv`. Never time-stretches.
+- Placement checks (a line crossing a cut, early, late, switch lead): use `vosync/vosync.py` below. Formats: [../VOICEOVER.md](../VOICEOVER.md).
 
 ## bakeoff/
 
