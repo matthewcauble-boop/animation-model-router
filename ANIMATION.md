@@ -8,7 +8,7 @@ from a mix of the two.
 This page lists the principles with a way to get each one from a model prompt or edit, a way to build it in code,
 and a check. The best-received shot we made in 2026-10 was **pure code**: three limbless ball characters hopping out
 of a doorway and across a meadow, built principle by principle. The reviewer called it "super good" and "perfect",
-then asked for the same rigour on every shot. That tool is `tools/edit/bounce.py`.
+then asked for the same rigour on every shot. That tool is `tools/edit/bounce.py`; the shot and its review sheet are in [docs/examples/ball-characters](docs/examples/ball-characters/).
 
 Related: timing per action and layer in [TIMING.md](TIMING.md), the local edit and code tricks in [EDIT.md](EDIT.md),
 same-character-every-shot in [CONSISTENCY.md](CONSISTENCY.md), staging and shot order in [STORYBOARD.md](STORYBOARD.md).
