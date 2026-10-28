@@ -63,6 +63,7 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [KEYFRAMES.md](KEYFRAMES.md) | Master-plate method, character sheets, the edit prompt, "prompt nouns trigger anatomy", the keyframe gate |
 | [STORYBOARD.md](STORYBOARD.md) | Annotated storyboard sheets (motion arrows, camera end frames, eyelines, IN/CAM/action per shot, timing on beats), the rule-of-thirds check, cinematography principles, the edit-plan table |
 | [TIMING.md](TIMING.md) | Ones, twos and threes per action and layer, applied in the edit |
+| [ANIMATION.md](ANIMATION.md) | Animation principles for AI video and code animation: why AI clips look stale, a principle table (prompt fix, code fix, check), personality via timing, acting rules (no idle hero, cause and effect visible), contact and weight, openings and eased parallax pans, mattes and the matte gate, a per-shot checklist |
 | [QA.md](QA.md) | Continuity checker, frameqa, blind critics, the gate rules, delivery rules |
 | [BAKEOFF.md](BAKEOFF.md) | Run your own fair bake-off: principles, moments, critic prompt, log templates |
 | [PERSONAL-USE.md](PERSONAL-USE.md) | Private, non-commercial route: animate from **any** reference image (permissive hosted plus open-weight models), voices without cloning real people |
@@ -100,6 +101,9 @@ All Python 3.10+, ffmpeg/ffprobe on PATH. `pip install -r requirements.txt`.
 | `tools/edit/mix.py` | Voice + music bed (set N dB under the voice) + SFX -> two-pass loudnorm, 48 kHz AAC muxed onto the video | nothing (local) |
 | `tools/edit/glow.py` | Pulsing coloured glow (or X-ray ghost) on a masked region: mask PNG, matte folder or colour key | nothing (local) |
 | `tools/edit/reps.py` | N reps from one top-to-bottom clip: forward, hold, reversed, hold; defect frames skipped; rep times out | nothing (local) |
+| `tools/edit/bounce.py` | Limbless ball characters hopping over a plate: area-kept squash/stretch, anticipation, arcs with hang time, damped settle, follow-through, tilt, contact shadows, dust/dew, per-character personality, impacts on ones and drift on twos, synthesised boops | nothing (local) |
+| `tools/edit/pan.py` | Eased pan/push across a large plate with parallax layers and holds, camera on ones | nothing (local) |
+| `tools/qa/matte_gate.py` | Matte gate: silhouette area, per-colour pixels inside the matte, holes and separate parts against the approved still; contact sheet of failing frames; exit 1 on any fail | nothing (local) |
 | `tools/voice/lines.py` | Voice a `lines.json` with a locked `voice.json` on fal; cached by text, `--dry-run`, trims silence, word timings | `FAL_KEY` (not for `--dry-run`) |
 | `tools/common/vision.py` | Shared yes/no vision backends (TypeSafe Jev, Gemini, fal OpenRouter, Ollama) | the backend's key |
 | `tools/common/launch_detached.ps1` | Start a long job detached with no console window (Windows) | |
@@ -125,6 +129,11 @@ python tools/voice/lines.py lines.json --voice voice.json -o vo/ --dry-run
 python tools/edit/reps.py down.mp4 -o reps.mp4 --reps 3 --down 0.65 --up 0.6 --report reps.json
 python tools/edit/glow.py reps.mp4 -o reps-glow.mp4 --mask-dir mattes/ --color "#3cff5a" --start 1.2
 python tools/edit/mix.py --video cut.mp4 --voice placed.json --music bed.wav --sfx sfx.wav -o master.mp4
+
+# animation in code, and the matte gate before any composite goes into the cut
+python tools/edit/bounce.py scene.json -o bounce.mp4 --report bounce.json --arcs arcs.jpg
+python tools/edit/pan.py pan.json -o opening-pan.mp4
+python tools/qa/matte_gate.py --masks mattes/ --ref approved_mask.png --frames frames/ --ref-frame approved.png --color trousers=#2f8f3a~30
 
 # a bake-off
 python tools/bakeoff/bake.py bakeoff/jobs.json --dry-run

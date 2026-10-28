@@ -28,3 +28,4 @@ tools/explainer-critic/**/analysis/
 explainer-critic-*/
 .cache/
 vo/
+matte-gate*/

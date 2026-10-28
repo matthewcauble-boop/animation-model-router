@@ -35,6 +35,9 @@ tools/
   edit/mix.py                 voice + music + SFX -> two-pass loudnorm, 48 kHz AAC, muxed onto the video
   edit/glow.py                pulsing glow / X-ray ghost on a masked region (mask PNG, matte folder, colour key)
   edit/reps.py                N reps from one top-to-bottom clip (forward, hold, reversed, hold)
+  edit/bounce.py              limbless ball characters hopping over a plate, principles built in; --demo self-test
+  edit/pan.py                 eased parallax pan/push with holds; --demo self-test
+  qa/matte_gate.py            matte gate: area, colour, holes, parts vs the approved still; --demo self-test
   voice/lines.py              line-by-line TTS on fal with a locked voice; cached by text; trims silence
   voice/examples/             lines.example.json, voice.example.json, timeline.example.json
 ```
@@ -145,6 +148,48 @@ python tools/edit/reps.py down.mp4 -o reps.mp4 [--reps 3] [--first F] [--last F]
 
 Frames are re-timed by index, never interpolated. `--alive` holds drift between neighbouring drawings instead of
 freezing. `reps.json` has each rep's down / bottom / up / top time. Silent output.
+
+## edit/bounce.py
+
+```
+python tools/edit/bounce.py scene.json -o out.mp4 [--report r.json] [--arcs arcs.jpg] [--frames DIR] [--no-audio]
+python tools/edit/bounce.py --demo DIR
+```
+
+- `scene.json`: size, fps, duration, `rate` (`mixed` = impacts on ones, drift on twos, settled poses held; `ones`;
+  `twos`), a plate (image or `{"gradient", "ground_y", "ground"}`), optional `depth` scale by ground line, and
+  `characters` with sprites (`front` required; `left`, `right`, `*_blink` optional), `height`, `preset`
+  (`light` / `heavy` / `springy`), `params` overrides, `start`, and `actions` (`hop`, `wait`, `at`, `look`, `lean`,
+  `blink`). Full format in the file's docstring.
+- Report: `area_min` / `area_max` of `sx*sy` (both 1.0), `held_frac`, `ones_frac`, landings and every event time
+  (for SFX and cue placement). `--arcs` draws the centre trail per frame with contact squashes outlined.
+- `--demo` draws three test ball sprites and a gradient plate, renders 4.2 s at 720x1280 with audio, and asserts
+  area is kept and timing is mixed. Principles and numbers: [../ANIMATION.md](../ANIMATION.md).
+
+## edit/pan.py
+
+```
+python tools/edit/pan.py pan.json -o pan.mp4
+python tools/edit/pan.py --demo DIR
+```
+
+Layers back to front with a `parallax` factor each; keys with `t`, `x`, `y`, `zoom` and an optional `hold` before
+the next move; `ease` = `inout` | `sine` | `linear`. Silent output, camera on ones. Settings that work:
+[../ANIMATION.md](../ANIMATION.md#6-openings-and-pans).
+
+## qa/matte_gate.py
+
+```
+python tools/qa/matte_gate.py --masks DIR --ref approved_mask.png [--frames DIR] [--ref-frame approved.png]
+       [--color NAME=#hex~T | NAME=#lo-#hi ...] [--tol 0.10] [--color-tol 0.10] [--max-holes 0.01]
+       [--min-part 0.005] [--label N] [--norm none|height] [--out matte-gate/]
+python tools/qa/matte_gate.py --demo DIR
+```
+
+- Masks: greyscale/binary PNG (white = character), RGBA cutouts (alpha = mask, colours from the same file) or label
+  PNGs with `--label N`. Frames pair with masks by file stem, else by order.
+- Output `OUT/report.md`, `report.json`, `failing.jpg`. Exit 1 on any failing frame. Rules:
+  [../ANIMATION.md](../ANIMATION.md#7-mattes-and-the-matte-gate).
 
 ## voice/lines.py
 
