@@ -1,5 +1,6 @@
 # Matt Cauble Studios
-n*An open field guide and toolkit for making AI cartoon episodes: routing work to the right model, consistent characters and sets, animation principles, local editing, voice and QA. (Formerly `animation-model-router`.)*
+
+*An open field guide and toolkit for making AI cartoon episodes: routing work to the right model, consistent characters and sets, animation principles, local editing, voice and QA. (Formerly `animation-model-router`.)*
 
 > **Using an AI agent?** Give it this repo's link and ask it to set things up. It should start with [AGENTS.md](AGENTS.md).
 
