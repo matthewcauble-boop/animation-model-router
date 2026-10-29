@@ -147,6 +147,9 @@ character's drawing.
 | tick (counters) | 1760 Hz + 2640 Hz, 25 ms decay |
 | end sting | C-E-G-C arpeggio (523-1046 Hz), 70 ms apart, 0.35 s decay |
 
+These suit explainer UI beats. For character foley (landings sized by the character, doors, surfaces, nature beds),
+spotted automatically from the animation's event tracks and gated for sync and loudness, see [SOUND.md](SOUND.md).
+
 **Music beds composed in code.** A short original loop (drums from noise and sine kicks, a bass line, a pad), rendered
 once per style and reused across a series, with a known start offset for the groove. No licence, no claims, and the
 same bed under every episode of a series is a brand cue.
