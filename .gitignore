@@ -29,3 +29,10 @@ explainer-critic-*/
 .cache/
 vo/
 matte-gate*/
+# acting / staging reviews, Blender scratch
+actstrip-*/
+staging-*/
+animation-director-*/
+*.blend
+*.blend1
+*.npz

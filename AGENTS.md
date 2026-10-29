@@ -39,7 +39,11 @@ turned into a cartoon, or a character their kid loves. The episodes are for **pr
    audio first, then lip-sync to it.
 8. **Finish:** cartoon timing on twos ([TIMING.md](TIMING.md)), music, then run the checks in [QA.md](QA.md) and
    [LESSONS.md](LESSONS.md). Make sure what's on screen matches what's said, the characters stay on-model and nobody
-   freezes. Show the person the result and ask what to change.
+   freezes. For character acting, run the blind critic in [agents/animation-director.md](agents/animation-director.md)
+   with a character bible filled in from [docs/character-acting-bible.template.md](docs/character-acting-bible.template.md)
+   ([ACTING.md](ACTING.md)). Show the person the result and ask what to change.
+9. **Optional, for a set that recurs across many shots:** build it once in Blender and paint it
+   ([BLENDER-WORLD.md](BLENDER-WORLD.md)); it needs Blender installed and is slower to set up, but every shot agrees.
 
 ## Rules of thumb
 

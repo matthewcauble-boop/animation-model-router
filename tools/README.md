@@ -38,6 +38,9 @@ tools/
   edit/bounce.py              limbless ball characters hopping over a plate, principles built in; --demo self-test
   edit/pan.py                 eased parallax pan/push with holds; --demo self-test
   qa/matte_gate.py            matte gate: area, colour, holes, parts vs the approved still; --demo self-test
+  qa/staging_rules.py         staging gate: overlap at any depth, spacing while moving, stairs in order; --demo self-test
+  qa/actstrip.py              frame strips + cuts, stepping, holds and motion peaks for an acting review
+  blender/                    the painted-world pipeline (Blender headless + Python); see blender/README.md
   voice/lines.py              line-by-line TTS on fal with a locked voice; cached by text; trims silence
   voice/examples/             lines.example.json, voice.example.json, timeline.example.json
 ```
@@ -190,6 +193,37 @@ python tools/qa/matte_gate.py --demo DIR
   PNGs with `--label N`. Frames pair with masks by file stem, else by order.
 - Output `OUT/report.md`, `report.json`, `failing.jpg`. Exit 1 on any failing frame. Rules:
   [../ANIMATION.md](../ANIMATION.md#7-mattes-and-the-matte-gate).
+
+## qa/staging_rules.py
+
+```
+python tools/qa/staging_rules.py --tracks tracks.json --scene scene.json [--out DIR] [--json]
+python tools/qa/staging_rules.py --demo DIR
+```
+
+- `tracks.json`: per frame, per character: `bbox`, run-length `alpha` (silhouette) and `vis` (visible part), `anchor`
+  (contact point), `ground`, `contact`, `seg` (changes with every new hop), `exp_area`. `tools/blender/export_tracks.py`
+  writes it from renders; any code animator can write the same JSON (`rle_encode` is in the file).
+- `scene.json`: `min_gap_px`, `overlap_ok` (whitelisted pass-in-front beats by frames or seconds) and `stairs` (levels
+  top to bottom: a threshold band, tread contact lines with x spans, the lawn "below y"), in output pixels.
+- Output `DIR/report.md` (findings and every character's landings in order) and `findings.json`. Exit 1 on any P0.
+  Rules and why they exist: [../QA.md](../QA.md#staging-rules-overlap-spacing-stairs).
+
+## qa/actstrip.py
+
+```
+python tools/qa/actstrip.py CLIP.mp4 [--fps 12] [--overview 6] [--out DIR] [--track] [--t0 S --t1 S] [--width 300]
+```
+
+`overview.jpg`, `strip_NN.jpg` (24 timestamped frames a sheet), `motion.png`, `key_*.jpg` triplets around motion peaks,
+and `report.md/json`: cuts (including same-set reframes, from a one-frame spike in changed pixels), stepping per shot
+(ones/twos/threes), holds (dead vs near), motion peaks, activity per 0.5 s. `--track` adds experimental largest-blob
+arcs and spacing on locked-off shots. It measures; the critic judges ([../agents/animation-director.md](../agents/animation-director.md)).
+
+## blender/
+
+Headless Blender scripts and their Python helpers for the painted world: see [blender/README.md](blender/README.md)
+and the guide [../BLENDER-WORLD.md](../BLENDER-WORLD.md).
 
 ## voice/lines.py
 

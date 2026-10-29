@@ -1,6 +1,6 @@
 # QA: gates, cheap screens and blind critics
 
-Five tools, each answering a different question:
+Seven tools, each answering a different question:
 
 | Tool | Question | Cost |
 |---|---|---|
@@ -8,6 +8,8 @@ Five tools, each answering a different question:
 | `tools/frameqa/frameqa.py` | Is this frame **broken**? (glitches, cut-off text, flicker, loudness) | about $0.03-0.04 per minute of video |
 | `tools/vosync/vosync.py` | Does the picture **match what is being said**, at that moment? | free (timing); about $0.001 a line with a vision pass |
 | `tools/judge/judge.py` | Atomic yes/no checks tuned to **your own** approve/reject calls (pose, proportion, alive, layout) | well under $0.001 a frame |
+| `tools/qa/staging_rules.py` | Are the characters staged like **solid things in a real place**? (no overlap at any depth, a gap while moving, stairs one tread at a time) | free (code, on exact renderer tracks) |
+| `tools/qa/actstrip.py` + [agents/animation-director.md](agents/animation-director.md) | Does each character **act**: think, feel, have weight? ([ACTING.md](ACTING.md)) | free strips; one critic agent per clip |
 | Blind critics | Which take is **better**? | 3 fresh LLM agents per round |
 
 The expensive reviewer (a person, or an LLM that reads frames) comes last and opens **only the frames the cheap
@@ -19,6 +21,8 @@ first pass for a few cents.
 1. **Keyframe gate** before any video spend: `continuity.py --stills` on all of a scene's start frames. Animate nothing
    until it passes. ([KEYFRAMES.md](KEYFRAMES.md))
 2. **Cut gate** on the rendered cut: `continuity.py`, then `frameqa.py`, then `vosync.py` on anything with a narrator.
+   On code-animated or rendered characters, `staging_rules.py` on the renderer's tracks too; on every animatic and
+   rough cut, the story-director and then the animation-director critic.
 3. **Any confirmed P0 fails the gate.** Both tools exit with code 1, so they can block a build script.
 4. **Fix every P0 that code can fix** (safe area, black frames, loudness, a missing character in a start frame) and
    re-run. Re-runs are nearly free: answers are cached by frame hash.
@@ -158,6 +162,41 @@ python tools/judge/judge.py eval --evalset evalset/ --split test -v
   model. A clear fail is P0; unsure is P2 (look at it).
 - **Backends:** TypeSafe Jev (typed questions with calibrated probabilities, Box for layout), fal's vision router,
   any OpenAI-compatible vision endpoint, or local Ollama.
+
+## Staging rules: overlap, spacing, stairs
+
+`tools/qa/staging_rules.py` runs three P0 checks on exact per-frame character tracks from the renderer (silhouette,
+visible part, contact point, contact flag and hop segment per character per frame; `tools/blender/export_tracks.py`
+writes them for the [Blender world](BLENDER-WORLD.md), and any code animator can write the same JSON):
+
+| Rule | Fails when | Allowed only when |
+|---|---|---|
+| **Overlap at any depth** | two characters' on-screen silhouettes overlap by more than 2% of the smaller one, whatever their depths | the beat is a deliberate pass-in-front, whitelisted in the scene's `overlap_ok` with its frames |
+| **Spacing** | two characters are closer than the minimum screen gap (`min_gap_px`, or 10% of the smaller one's size) for 2+ frames while either is moving | the same whitelist |
+| **Stairs in order** | a landing between the threshold and the lawn is off every tread line (on a riser, between treads), skips a tread, lands twice on one tread, or goes back up | never |
+
+```bash
+python tools/qa/staging_rules.py --tracks check/tracks.json --scene scene.json --out check/staging   # exit 1 on any P0
+python tools/qa/staging_rules.py --demo work/staging-demo    # a faulty hop-out fails, the fixed one passes
+```
+
+The scene's `stairs` block lists each level top to bottom: the threshold as a band (rows and x span), each tread as a
+contact line with its x span, and the lawn as "below row y". The report lists every character's landings in order
+(`threshold@f0 -> step1@f18 -> step2@f36 -> lawn@f54`), so a person can check them against the plate.
+
+**How the old checker missed all of this.** A three-character hop-out passed an earlier scene checker with zero P0s.
+The director then saw two characters overlapping in the doorway and every one of them landing down the risers instead
+of on the treads. Re-run with these rules, the same tracks failed with 21 P0s. The old checker missed them for two
+reasons:
+1. **It compared characters only at the same depth.** Two characters a few rows apart on the ground counted as "one in
+   front of the other", so any overlap was excused. On a phone they read as one character stuck to another. Overlap is
+   now measured in screen space, at any depth; only the whitelist excuses it.
+2. **Its support boxes were drawn from the character's own track.** Wherever the animation landed was, by definition, a
+   support, so a landing 14 px down a riser passed. Tread lines are now measured on the **clean plate**, zoomed in (the
+   top face of each tread and a contact line inside it), and never taken from the animation.
+
+The general lesson: a gate that takes its reference from the thing it checks can only confirm it. Take references from
+the plate, the bible or the director's notes.
 
 ## Delivery rules the gates enforce
 

@@ -13,7 +13,10 @@ then asked for the same rigour on every shot. That tool is `tools/edit/bounce.py
 Related: timing per action and layer in [TIMING.md](TIMING.md), the local edit and code tricks in [EDIT.md](EDIT.md),
 same-character-every-shot in [CONSISTENCY.md](CONSISTENCY.md), staging and shot order in [STORYBOARD.md](STORYBOARD.md).
 The performance layer on top of these mechanics (thought before action, key poses first, weight, eyes lead,
-blinks, comedy timing, and how to measure each one) is in [ACTING.md](ACTING.md).
+blinks, comedy timing, and how to measure each one) is in [ACTING.md](ACTING.md), with the full measurement table in
+[ACTING-MEASURES.md](ACTING-MEASURES.md) and a blind critic for it in [agents/animation-director.md](agents/animation-director.md).
+To put these characters into a consistent painted 3D set (real occlusion behind door jambs, landings on real treads,
+camera moves that agree across shots), see [BLENDER-WORLD.md](BLENDER-WORLD.md).
 
 ---
 
@@ -213,7 +216,16 @@ python tools/qa/matte_gate.py --demo work/matte-demo     # one eaten frame and o
 # eased parallax pan with holds
 python tools/edit/pan.py pan.json -o pan.mp4
 python tools/edit/pan.py --demo work/pan-demo
+
+# acting review: strips, cuts, ones/twos per shot, holds and motion peaks for the animation-director critic
+python tools/qa/actstrip.py cut.mp4 --fps 12 --overview 6 --out review/strips
+
+# staging gate on exact tracks: no overlap at any depth, a gap while moving, stairs one tread at a time
+python tools/qa/staging_rules.py --tracks tracks.json --scene scene.json
+python tools/qa/staging_rules.py --demo work/staging-demo
 ```
+
+The painted Blender world (projection, depth cards, ambient breeze and water): [tools/blender/](tools/blender/README.md).
 
 Formats and options: [tools/README.md](tools/README.md).
 
@@ -233,3 +245,10 @@ nothing stops them doing this unless you build the scene in layers and check it.
 | **Check it, don't trust it.** | Export each sprite's per-frame box, mask and depth from the animator and test them against the plate's masks: visible area may only grow from an edge, occluder or entrance; overlap with a solid needs a registered contact; grounded frames sit within a few pixels of a support. For AI footage, track the character's mask instead and run the same tests plus the matte gate. |
 
 Add the masks to the scene's bible so every shot on that plate is checked the same way.
+
+Two more rules came from the next round, when the same characters hopped out of a Blender cottage: **never overlap each
+other on screen at any depth** (unless the beat is a marked pass-in-front), and **take stairs one tread at a time**,
+landing on each tread line measured from the clean plate. Both are code checks in `tools/qa/staging_rules.py`; why the
+earlier checker missed them is in [QA.md](QA.md#staging-rules-overlap-spacing-stairs). For occlusion done by real
+geometry instead of plate layers, put the characters on depth cards in a Blender world
+([BLENDER-WORLD.md](BLENDER-WORLD.md#8-characters-on-depth-cards)).

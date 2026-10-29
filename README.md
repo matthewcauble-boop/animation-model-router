@@ -67,6 +67,8 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [TIMING.md](TIMING.md) | Ones, twos and threes per action and layer, applied in the edit |
 | [ANIMATION.md](ANIMATION.md) | Animation principles for AI video and code animation: why AI clips look stale, a principle table (prompt fix, code fix, check), personality via timing, acting rules (no idle hero, cause and effect visible), contact and weight, openings and eased parallax pans, mattes and the matte gate, a per-shot checklist |
 | [ACTING.md](ACTING.md) | Acting for animation: the reading list (Thomas & Johnston, Williams, Hooks, Goldberg, Miyazaki), the per-beat check (thinks/wants/feels, thought change, key pose, timing, weight), rules that catch most AI-take problems, the key-poses-first acting pass with timing charts, measurable thresholds for judges, and how to calibrate a blind acting critic |
+| [ACTING-MEASURES.md](ACTING-MEASURES.md) | Every acting principle as a number or an atomic judge question: where the data comes from, a starting threshold, and how to turn it into a verdict |
+| [BLENDER-WORLD.md](BLENDER-WORLD.md) | A painted 3D set you can film in: Blender blockout, paint a camera view with an image-edit model and project it back onto real objects, per-object paint, two-camera projection, safe moves and the measured quality plateau, never cross-fade two paintings, real water, characters on depth cards behind door jambs, stair choreography, lawn and path repainted as separate edits, ambient breeze and water, render times on a 12 GB GPU, costs, what failed |
 | [QA.md](QA.md) | Continuity checker, frameqa, blind critics, the gate rules, delivery rules |
 | [BAKEOFF.md](BAKEOFF.md) | Run your own fair bake-off: principles, moments, critic prompt, log templates |
 | [PERSONAL-USE.md](PERSONAL-USE.md) | Private, non-commercial route: animate from **any** reference image (permissive hosted plus open-weight models), voices without cloning real people |
@@ -77,7 +79,7 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [EDIT.md](EDIT.md) | The local edit: only the motion is paid. Layer stack, reps from one clip, start/end angle clips, code tricks, ffmpeg assembly, mix, delivery, a real cost table |
 | [VOICEOVER.md](VOICEOVER.md) | One locked voice per character, line-by-line cached TTS, trim never speed, lines on their picture, when lip-sync is worth paying for |
 | [REVIEW.md](REVIEW.md) | Blind story-director and lesson-coach agents, the judge-and-fix loop for stills, what judges can't do |
-| [agents/](agents) | The two review agents as Claude Code agent files |
+| [agents/](agents) | The blind review agents as Claude Code agent files: story-director, animation-director (acting), lesson-coach, explainer-critic; a fill-in character acting bible for the animation-director is in [docs/character-acting-bible.template.md](docs/character-acting-bible.template.md) |
 
 ## The tools
 
@@ -106,6 +108,10 @@ All Python 3.10+, ffmpeg/ffprobe on PATH. `pip install -r requirements.txt`.
 | `tools/edit/reps.py` | N reps from one top-to-bottom clip: forward, hold, reversed, hold; defect frames skipped; rep times out | nothing (local) |
 | `tools/edit/bounce.py` | Limbless ball characters hopping over a plate: area-kept squash/stretch, anticipation, arcs with hang time, damped settle, follow-through, tilt, contact shadows, dust/dew, per-character personality, impacts on ones and drift on twos, synthesised boops | nothing (local) |
 | `tools/edit/pan.py` | Eased pan/push across a large plate with parallax layers and holds, camera on ones | nothing (local) |
+| `tools/qa/staging_rules.py` | Staging gate on exact character tracks: screen-space overlap at any depth, a minimum gap while moving, stairs one tread at a time in order; `--demo`; exit 1 on any P0 | nothing (local) |
+| `tools/qa/actstrip.py` | Frame strips and measurements for an acting review: cuts (same-set reframes too), ones/twos per shot, dead and near holds, motion peaks, key-frame triplets | nothing (local) |
+| `agents/animation-director.md` | Blind acting critic agent: beat sheet, 20-item checklist, evidence rules, PASS / REVISE / FAIL with a re-blocked key-pose plan | an agent runtime (Claude Code style) |
+| `tools/blender/` | The painted-world pipeline, headless (`blender -b -P`): example blockout, raycast, projector cameras + paint renders, lawn and path paint split, paint layers onto materials, frame and still renders, characters on depth cards, track export, ambient breeze and water, the frozen gate ([README](tools/blender/README.md)) | Blender 4.2+ (tested 5.1); an image-edit model for the paintings |
 | `tools/qa/matte_gate.py` | Matte gate: silhouette area, per-colour pixels inside the matte, holes and separate parts against the approved still; contact sheet of failing frames; exit 1 on any fail | nothing (local) |
 | `tools/voice/lines.py` | Voice a `lines.json` with a locked `voice.json` on fal; cached by text, `--dry-run`, trims silence, word timings | `FAL_KEY` (not for `--dry-run`) |
 | `tools/common/vision.py` | Shared yes/no vision backends (TypeSafe Jev, Gemini, fal OpenRouter, Ollama) | the backend's key |
@@ -137,6 +143,15 @@ python tools/edit/mix.py --video cut.mp4 --voice placed.json --music bed.wav --s
 python tools/edit/bounce.py scene.json -o bounce.mp4 --report bounce.json --arcs arcs.jpg
 python tools/edit/pan.py pan.json -o opening-pan.mp4
 python tools/qa/matte_gate.py --masks mattes/ --ref approved_mask.png --frames frames/ --ref-frame approved.png --color trousers=#2f8f3a~30
+
+# acting review strips, and the staging gate on exact tracks
+python tools/qa/actstrip.py cut.mp4 --fps 12 --out review/strips
+python tools/qa/staging_rules.py --tracks tracks.json --scene scene.json
+
+# the painted Blender world: a test blockout, then characters on depth cards (full walkthrough in tools/blender/README.md)
+blender -b --factory-startup -P tools/blender/example_world.py -- --out work/bw/world.blend
+blender -b work/bw/world_painted.blend -P tools/blender/depth_cards.py -- --config cards.json --out work/bw/med
+python tools/blender/ambient.py --demo work/amb-demo
 
 # a bake-off
 python tools/bakeoff/bake.py bakeoff/jobs.json --dry-run
