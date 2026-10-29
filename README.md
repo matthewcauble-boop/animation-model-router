@@ -66,6 +66,7 @@ Full detail per moment (settings, prompt templates, reference recipes, cost per 
 | [STORYBOARD.md](STORYBOARD.md) | Annotated storyboard sheets (motion arrows, camera end frames, eyelines, IN/CAM/action per shot, timing on beats), the rule-of-thirds check, cinematography principles, the edit-plan table |
 | [TIMING.md](TIMING.md) | Ones, twos and threes per action and layer, applied in the edit |
 | [ANIMATION.md](ANIMATION.md) | Animation principles for AI video and code animation: why AI clips look stale, a principle table (prompt fix, code fix, check), personality via timing, acting rules (no idle hero, cause and effect visible), contact and weight, openings and eased parallax pans, mattes and the matte gate, a per-shot checklist |
+| [ACTING.md](ACTING.md) | Acting for animation: the reading list (Thomas & Johnston, Williams, Hooks, Goldberg, Miyazaki), the per-beat check (thinks/wants/feels, thought change, key pose, timing, weight), rules that catch most AI-take problems, the key-poses-first acting pass with timing charts, measurable thresholds for judges, and how to calibrate a blind acting critic |
 | [QA.md](QA.md) | Continuity checker, frameqa, blind critics, the gate rules, delivery rules |
 | [BAKEOFF.md](BAKEOFF.md) | Run your own fair bake-off: principles, moments, critic prompt, log templates |
 | [PERSONAL-USE.md](PERSONAL-USE.md) | Private, non-commercial route: animate from **any** reference image (permissive hosted plus open-weight models), voices without cloning real people |

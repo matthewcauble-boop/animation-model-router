@@ -12,6 +12,8 @@ then asked for the same rigour on every shot. That tool is `tools/edit/bounce.py
 
 Related: timing per action and layer in [TIMING.md](TIMING.md), the local edit and code tricks in [EDIT.md](EDIT.md),
 same-character-every-shot in [CONSISTENCY.md](CONSISTENCY.md), staging and shot order in [STORYBOARD.md](STORYBOARD.md).
+The performance layer on top of these mechanics (thought before action, key poses first, weight, eyes lead,
+blinks, comedy timing, and how to measure each one) is in [ACTING.md](ACTING.md).
 
 ---
 
@@ -88,6 +90,8 @@ parameters and the same start time: lockstep reads as a copy, not a group.
 | **Cause and effect are visible.** An object that lands was put there by a hand, matched frame to frame; never pop an object in with code alone | objects that appear on their own break the world | for each new object, find the frame where it is placed and the frame before it |
 | **One idea per beat.** A simple warm payoff beats a clever twist that needs explaining | if the ending needs a line to explain it, it isn't working | describe the ending in one sentence a child would get |
 | **Hold on the result.** After a gag or a reveal, hold long enough to read it (0.5-1.5 s) | cutting on the punchline loses it | the hold is in the timing plan |
+
+The full acting checklist, the per-beat check and the key-poses-first acting pass are in [ACTING.md](ACTING.md).
 
 Keeping the hero busy is cheap: a living hold (breathing, blinks) costs nothing in code, and for a video model a
 "keeps working at X" prompt on a cut-away is one generation. A frozen still is never the fix
