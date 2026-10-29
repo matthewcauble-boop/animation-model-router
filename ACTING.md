@@ -76,6 +76,50 @@ K3 -> K4 (f34 apex)                    14 f twos   |   |   |  | | || slow into t
 K4 -> K5 (f44 contact)                 10 f        || |  |   |    |   fast into contact, no ease
 K5 -> K6 (f56 settled)                 12 f        squash, rebound, 2 jiggles, then a living hold
 ```
+Give the chart a matching `timing.json` for `onestwos.py` too ([TIMING.md](TIMING.md)), so the in-betweens are stepped
+the way the chart says.
+
+## Pre-flight checklist (pose sheet, animatic or cut)
+
+A NO on a starred item is a P0: no spend on the next stage, and nothing goes to the director.
+
+1. \* Every beat of every on-screen character has thinks / wants / feels and an obstacle written down.
+2. \* **Thought before action:** every deliberate action is preceded by a visible thought signal (eyes, blink, pause) 4-12 frames earlier.
+3. \* **Character locks hold in the acting:** every hard rule in the character bible (forbidden expressions, forbidden
+   body parts, grounded or floating, status). Template: [docs/character-acting-bible.template.md](docs/character-acting-bible.template.md).
+4. \* **Weight is shown:** every lift, carry, landing and push has preparation, a slow start for heavy things, contact on
+   ones and a settle. No object floats, slides in the hands or moves without a cause.
+5. \* **Actions play through:** pick up, carry, lower, contact, let go, settle; or a clean match cut on the action.
+6. \* **Readable in silhouette:** every key pose names its action as a black shape, with a clear line of action.
+7. Asymmetry: no twinned limbs, no lockstep characters, no simultaneous landings unless it's a marked unison beat.
+8. Anticipation before every take-off and big move, scaled to it and opposite in direction.
+9. Contrast in timing: fast against slow and still against moving inside each shot; no metronome moves.
+10. Holds read: 6-12 f on a gesture, 12-24 f on a reaction; living, not dead; no idle hero over about 1.5 s without a story reason.
+11. Ease in and out on acting moves; no slow-in into impacts.
+12. Arcs on heads, hands, bodies and loose parts.
+13. Overlap and follow-through on leaves, stems, manes, braids and tails: they lag and settle.
+14. Eyes lead, then the head, then the body; head turns dip on the breakdown.
+15. Blinks on thought changes, not on a metronome; no dead stare.
+16. Expressions hold for the beat and change only at thought changes; no flicker or drift.
+17. Squash and stretch keeps volume.
+18. One main action at a time; secondary actions stay secondary; no gesture repeated more than once per film.
+19. Comedy: set-up, beat before, turn, hold on the result.
+20. At least one living pause (*ma*) at the turn of the feeling in a short; nature keeps moving through the holds.
+
+When it passes, run the blind critic ([agents/animation-director.md](agents/animation-director.md)) with only the clip
+(or pose sheet) and the character bible.
+
+## Writing acting into AI prompts
+
+Models don't act; they average. Put the acting in words they can follow, one beat per generation:
+- Name the **thought signal and the order**: "she looks down at the stone, pauses, then bends to lift it".
+- Name the **effort with the right face**: "lifts slowly with bent knees, the stone heavy, smiling with determined
+  effort, not strained".
+- Name the **timing**: "a short crouch, then springs up", "holds the pose for a moment, then...".
+- Name the **follow-through**: "her braided mane keeps swinging after she stops".
+- Lock what they invent: no extra smiles or winks before the gag, "keeps the same proportions", "no fingers", "no arms or
+  legs", camera locked off.
+- Then judge the **first, middle and last frames** and the contacts, not only the end frame.
 
 ## Measuring it
 
@@ -96,18 +140,61 @@ thresholds; fit them to your own approve/reject notes:
 | Lockstep | cross-correlation of two characters' vertical tracks, and its lag | > 0.9 at a lag < 3 f = lockstep |
 | Timing contrast | fastest-to-slowest move duration within a shot | > 2 |
 
+The full table (every principle, where its data comes from, a threshold and a judge question):
+**[ACTING-MEASURES.md](ACTING-MEASURES.md)**.
+
 ## The review
 
 Review every pose sheet, animatic and rough cut with a blind critic that sees only the clip and the character notes,
-never the builder's reasoning. Give it frame strips at 6-12 fps, and make it pull **24 fps bursts at every contact,
-anticipation and settle** before it claims anything about them: a 12 fps strip can skip the one or two frames of a
-landing. It returns PASS / REVISE / FAIL, issues with timestamps and a re-blocked key-pose plan.
+never the builder's reasoning: [agents/animation-director.md](agents/animation-director.md). Gate order on every
+animatic and rough cut: story-director, then animation-director, then the cut gates ([QA.md](QA.md)).
 
-Calibrate it against your own verdicts before you trust it. In our first calibration (six clips, four rejected and two
-approved), the critic caught every reject for the right reason. But it failed an approved clip on nitpicks: it demanded a
-"thought" before every hop of a run, called a regular hop cycle a metronome, and claimed a skipped step from a strip that
-had dropped the contact frame. Evidence rules fixed that: cuts are cuts, contact claims need a 24 fps burst, thought before
-action is for decisions, cycles may be regular, end-of-clip holds are polish, and absences are confirmed at full size.
-After that it agreed on five of the six. The sixth was an early cut that its reviewer had praised for the bounce, but in
-which the characters overlap each other. A later note from the same reviewer made overlap a hard rule, so the critic was
-left failing it.
+```bash
+# the strips and measurements the critic starts from (cuts, ones/twos per shot, holds, motion peaks, key triplets)
+python tools/qa/actstrip.py cut.mp4 --fps 12 --overview 6 --out review/strips
+```
+
+Give it frame strips at 6-12 fps, and make it pull **24 fps bursts at every contact, anticipation and settle** before it
+claims anything about them: a 12 fps strip can skip the one or two frames of a landing. It returns PASS / REVISE / FAIL,
+issues with timestamps and a re-blocked key-pose plan.
+
+### Calibrating the critic against your own calls
+
+A critic you haven't calibrated is a guess. Do this before you let it gate anything, and again after every change to
+its prompt:
+
+1. **Collect labelled clips.** At least six, with both kinds: takes the director rejected and takes the director
+   approved, with the director's one-line reason for each. More approved clips than you think: critics drift toward
+   failing everything.
+2. **Rename them neutrally** (`clip_a.mp4`, `clip_b.mp4`...) into a fresh folder: no version numbers, folder names, dates
+   or notes. Keep the mapping in a separate file the critic never sees.
+3. **Run a fresh critic per clip** with only the clip and the character bible. No history, no reasoning, no other clips.
+4. **Fill the agreement table:**
+
+   | Blind name | What it is (for you) | Director | Critic round 1 | Critic round 2 |
+   |---|---|---|---|---|
+   | clip_a | AI take, a character places a stone | rejected: no weight | FAIL (no weight on the stone) | FAIL |
+   | clip_b | code-animated, three ball characters leave a cottage | approved | REVISE (wrong) | PASS |
+   | ... | | | | |
+
+5. **Read the disagreements, not the scores.** For each one, find the claim that caused it and check it against the
+   frames. Was the claim true (the director may want to relabel) or false (the critic needs an evidence rule)?
+6. **Tighten with evidence rules, never with "be nicer".** Each rule names the mistake and the proof the critic now
+   needs before it can make that claim. Then re-run the whole set, not only the clip that failed.
+7. **Keep a log** of each round (the table, what changed and why) and add every new verdict from the director to the set.
+
+**Our first calibration** (six clips: four rejected, two approved, agreement 4/6 in round 1 and 5/6 in round 2). In
+round 1 the critic caught every reject for the right reason (no weight on a lifted stone, a prop that morphs, a walk
+through solid stones, characters overlapping each other), but it failed an approved clip on nitpicks: it demanded a
+"thought" before every hop of a run, called a regular hop cycle a metronome, gave the end-of-clip hold a P1, claimed "no
+contact shadow" from small frames, and claimed a skipped step from a strip that had dropped the contact frame. It also
+read a same-set reframe as a background swap, because the strip tool didn't detect that kind of cut (it now does, from a
+one-frame spike in changed pixels). Seven evidence rules fixed that: cuts are cuts; contact claims need a 24 fps burst;
+thought before action is for decisions; cycles may be regular; end-of-clip holds are polish; absences are confirmed at
+full size; weigh the whole performance. After that it agreed on five of the six, and the rejects agreed in both rounds.
+
+The sixth was an early cut that its director had praised for the bounce, but in which the characters pass through and
+stack on each other on the stairs. A later note from the same director made overlap and one-tread-at-a-time stairs hard
+rules, so we left the critic failing it rather than un-learn those notes, and asked the director whether "loved" meant the
+whole scene or the bounce. Six clips is a small set; the next gaps to fill are dialogue and comedy clips, and clips of
+every character in the cast.
